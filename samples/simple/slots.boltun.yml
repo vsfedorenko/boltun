@@ -1,0 +1,5 @@
+slots:
+- name: 'hi_slot'
+  utterances:
+  - 'Jack'
+  - 'Wiskas'
