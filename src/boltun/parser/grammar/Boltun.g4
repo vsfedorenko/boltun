@@ -86,7 +86,7 @@ def reset(self):
 document : (polyadic_tag | content)* EOF?;
 
 content
-    locals []
+locals []
 @init
 {
 
@@ -149,6 +149,7 @@ entity_tag
     LL_BRACK
     var_type=entity_type
     name=NAME
+    var_optional=QUESTION?
     var_fltrs+=fltr*?
     RR_BRACK
 {
@@ -162,14 +163,16 @@ elif entity_type == '~':
 elif entity_type == '@':
     node_class = SlotNode
 
-node = node_class($name.text)
+name=$name.text
+optional=$var_optional is not None
+node = node_class(name, optional)
 
 for fltr in $var_fltrs:
     name = fltr.__data__.get('name')
+    optional = fltr.__data__.get('optional')
     args = fltr.__data__.get('args')
     kwargs = fltr.__data__.get('kwargs')
-
-    node.add_filter(Filter(name, args, kwargs))
+    node.add_filter(Filter(name, optional, args, kwargs))
 
 self.node_stack.peek().add_child(node)
 } ;
@@ -184,14 +187,18 @@ call_tag
     LL_BRACK
     GREATER
     name=NAME
+    var_optional=QUESTION?
     var_attr=attr
+    var_optional=QUESTION?
     var_fltrs+=fltr*
     RR_BRACK
 {
 args = $ctx.var_attr.__data__.get('args', None)
 kwargs = $ctx.var_attr.__data__.get('kwargs', None)
 
-node = CallNode($name.text, args, kwargs)
+name=$name.text
+optional=$var_optional is not None
+node = CallNode(name, optional, args, kwargs)
 
 for fltr in $var_fltrs:
     name = fltr.__data__.get('name')
@@ -207,11 +214,12 @@ fltr
     locals []
     @init {}
     @after {}
-    : PIPE var_name=NAME var_attr=attr?
+    : PIPE var_name=NAME var_optional=QUESTION? var_attr=attr? var_optional=QUESTION?
 {
 
 $ctx.__data__ = {
     'name' : $ctx.var_name.text,
+    'optional': $var_optional is not None,
     'args' : $ctx.var_attr.__data__.get('args') if $ctx.var_attr else [],
     'kwargs' : $ctx.var_attr.__data__.get('kwargs') if $ctx.var_attr else {}
 }
@@ -411,16 +419,17 @@ WS	         : {self.state['tag'] and not self.state['comment']}?
 NAME         : {self.state['tag'] and not self.state['comment']}? ('a'..'z' | 'A'..'Z' | '_' | '-')+ ;
 DATA         : {not self.state['tag']}? . ;
 
-SLASH   : {self.state['tag']}? '/' ;
-AMP	    : {self.state['tag']}? '&' ;
-GREATER : {self.state['tag']}? '>' ;
-HAT	    : {self.state['tag']}? '^' ;
-EQUAL   : {self.state['tag']}? '=' ;
-BANG    : {self.state['tag']}? '!' ;
-DOT     : {self.state['tag']}? '.' ;
-COMMA   : {self.state['tag']}? ',' ;
-PERCENT : {self.state['tag']}? '%' ;
-TILDA   : {self.state['tag']}? '~' ;
-COMMAT  : {self.state['tag']}? '@' ;
+SLASH    : {self.state['tag']}? '/' ;
+AMP	     : {self.state['tag']}? '&' ;
+GREATER  : {self.state['tag']}? '>' ;
+HAT	     : {self.state['tag']}? '^' ;
+EQUAL    : {self.state['tag']}? '=' ;
+BANG     : {self.state['tag']}? '!' ;
+DOT      : {self.state['tag']}? '.' ;
+COMMA    : {self.state['tag']}? ',' ;
+PERCENT  : {self.state['tag']}? '%' ;
+TILDA    : {self.state['tag']}? '~' ;
+COMMAT   : {self.state['tag']}? '@' ;
+QUESTION : {self.state['tag']}? '?' ;
 
 UNKNOWN : . ;

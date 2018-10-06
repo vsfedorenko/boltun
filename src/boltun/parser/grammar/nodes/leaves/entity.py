@@ -3,10 +3,11 @@ from ..__base__ import Filter, Node
 
 class EntityNode(Node):
 
-    def __init__(self, name, filters=None):
-        # type: (str, list) -> None
+    def __init__(self, name, optional=False, filters=None):
+        # type: (str, bool, list) -> None
         super(EntityNode, self).__init__()
         self.name = name
+        self.optional = optional
         self.filters = filters if filters else []
 
     def add_filter(self, filter_):

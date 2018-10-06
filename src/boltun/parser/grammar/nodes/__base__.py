@@ -10,10 +10,11 @@ class Node(object):
 
 class Filter(object):
 
-    def __init__(self, name, args=None, kwargs=None):
-        # type: (str, list, dict) -> None
+    def __init__(self, name, optional=False, args=None, kwargs=None):
+        # type: (str, bool, list, dict) -> None
         super(Filter, self).__init__()
         self.name = name
+        self.optional = optional
         self.args = args if args else []
         self.kwargs = kwargs if kwargs else {}
 
