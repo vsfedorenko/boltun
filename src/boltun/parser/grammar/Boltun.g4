@@ -177,7 +177,7 @@ node = DataNode(data_str)
 
 // =============================== POLYADIC TAG ===============================
 
-polyadic_tag : choice_tag ;
+polyadic_tag : choice_tag | choice_short_tag;
 
 // ================================= UNARY TAG ================================
 
@@ -216,6 +216,42 @@ self.node_stack.peek().add_child(choice_node)
 
 } ;
 
+// ============================= CHOICE SHORT TAG =============================
+
+choice_short_tag
+locals []
+@init
+{
+
+node = ChoiceNode()
+
+}
+@after
+{
+
+node.start = self.get_start_pos($ctx)
+node.stop = self.get_stop_pos($ctx)
+
+for child_node in node.children:
+    if not isinstance(child_node, (DataNode,)):
+        continue
+    child_node.start = node.start
+    child_node.stop = node.stop
+
+self.node_stack.peek().add_child(node)
+
+}
+:
+    LLL_BRACE
+    var_chars+=DATA+
+    RRR_BRACE
+{
+
+for c in $var_chars:
+    node.add_child(DataNode(c.text))
+
+}
+;
 // ================================ ENTITY TAG ================================
 
 entity_tag
@@ -550,6 +586,17 @@ self.open_bracket(current='(')
 R_PAREN  : ')'
 {
 self.close_bracket(expected='(')
+} ;
+
+LLL_BRACE : '{{{'
+{
+self.open_bracket(current='{{{')
+self.state['choice_short'] = True
+} ;
+RRR_BRACE : '}}}'
+{
+self.close_bracket(expected='{{{')
+self.state['choice_short'] = False
 } ;
 
 LL_BRACE : '{{'

@@ -70,6 +70,15 @@ class BoltunListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by BoltunParser#choice_short_tag.
+    def enterChoice_short_tag(self, ctx):
+        pass
+
+    # Exit a parse tree produced by BoltunParser#choice_short_tag.
+    def exitChoice_short_tag(self, ctx):
+        pass
+
+
     # Enter a parse tree produced by BoltunParser#entity_tag.
     def enterEntity_tag(self, ctx):
         pass

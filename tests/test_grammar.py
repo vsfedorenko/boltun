@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
             "and here [[# comment2 ___#@!@#!#$324~ ]] " \
             "{{ then select [[> env('THIS_VAR') ]] || or select [[> env('THAT_VAR') ]] }} " \
             "my dear, [[~ some_alias | validate(all=True) ]] " \
-            "[[@ slot_here ]]"
+            "[[@ slot_here ]] {{{!,?}}}"
 
         lexer = self.get_lexer(input_str)
         stream = self.get_stream(lexer)

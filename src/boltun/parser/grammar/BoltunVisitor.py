@@ -47,6 +47,11 @@ class BoltunVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by BoltunParser#choice_short_tag.
+    def visitChoice_short_tag(self, ctx):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by BoltunParser#entity_tag.
     def visitEntity_tag(self, ctx):
         return self.visitChildren(ctx)
