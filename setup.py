@@ -6,12 +6,12 @@ from setuptools import find_packages, setup
 def setup_package():
     setup(
         name="boltun",
-        packages=find_packages('src'),
-        package_dir={'': 'src'},
+        packages=find_packages('sources'),
+        package_dir={'': 'sources'},
 
         use_scm_version={
             'version_scheme': 'guess-next-dev',
-            'write_to': 'src/boltun/__version__.py',
+            'write_to': 'sources/boltun/__version__.py',
         },
 
         python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',

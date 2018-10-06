@@ -1,2 +1,0 @@
-class ForkNodeFactory(object):
-    pass

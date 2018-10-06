@@ -1,4 +1,4 @@
 entities:
-  intents: <% include("intents/*.yml") %>
-  aliases: <% include("aliases/*.yml") %>
-  slots: <% include("slots/*.yml") %>
+  intents: !boltun '[[> include("intents/*.yml")]]'
+  aliases: !boltun '[[> include("aliases/*.yml")]]'
+  slots: !boltun '[[> include("slots/*.yml")]]'

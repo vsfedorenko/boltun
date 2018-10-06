@@ -1,0 +1,7 @@
+*
+!.gitignore
+!__init__.py
+!Antlr4Grammar.g4
+!Antlr4Grammar.py
+!Antlr4GrammarErrorStrategy.py
+!../Antlr4GrammarExceptions.py
