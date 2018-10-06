@@ -2,7 +2,8 @@ class Node(object):
 
     def __init__(self):
         super(Node, self).__init__()
-        self._children = []
+        self.start = None
+        self.stop = None
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
