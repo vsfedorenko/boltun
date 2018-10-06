@@ -4,6 +4,7 @@ options {
 }
 
 @parser::header {
+
 import ast
 import logging
 
@@ -14,25 +15,33 @@ from .node import AliasNode, CallNode, ChoiceNode, CommentNode, ContentNode, \
 from ...util.collections import Stack
 
 logger = logging.getLogger(__name__)
+
 }
 
 @parser::members {
 
-@property
-def node_stack(self):
-    try:
-        return self._node_stack
-    except AttributeError:
-        self._node_stack = Stack()
-        self._node_stack.push(RootNode())
-        return self._node_stack
+def parse(self):
+    self.reset()
+    self.document()
 
-def get_start_pos(self, ctx):
+    root_node = self._node_stack.pop()
+    return root_node
+
+@property
+def _node_stack(self):
+    try:
+        return self.__node_stack
+    except AttributeError:
+        self.__node_stack = Stack()
+        self.__node_stack.push(RootNode())
+        return self.__node_stack
+
+def _get_start_pos(self, ctx):
     if not ctx:
         return None
     return ctx.start.start if ctx.start else None
 
-def get_stop_pos(self, ctx):
+def _get_stop_pos(self, ctx):
     if not ctx:
         return None
     return ctx.stop.stop if ctx.stop else None
@@ -40,60 +49,58 @@ def get_stop_pos(self, ctx):
 }
 
 
-@lexer::header{
+@lexer::header {
 
-import re
-import importlib
 import logging
-
-from antlr4 import *
 
 from Queue import Empty, LifoQueue
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
+
 }
 
 @lexer::members {
 
 @property
-def state(self):
+def _state(self):
     try:
-        return self._state
+        return self.__state
     except AttributeError:
-        self._state = defaultdict(bool)
-        return self._state
+        self.__state = defaultdict(bool)
+        return self.__state
 
 @property
-def bracket_queue(self):
+def _bracket_queue(self):
     try:
-        return self._bracket_queue
+        return self.__bracket_queue
     except AttributeError:
-        self._bracket_queue = LifoQueue()
-        return self._bracket_queue
+        self.__bracket_queue = LifoQueue()
+        return self.__bracket_queue
 
-def open_bracket(self, current):
-    self.bracket_queue.put(current)
+def _open_bracket(self, current):
+    self._bracket_queue.put(current)
 
-def close_bracket(self, expected):
-    if self.bracket_queue.get() == expected:
+def _close_bracket(self, expected):
+    if self._bracket_queue.get() == expected:
         return True
     return None
 
 def reset(self):
     super(BoltunLexer, self).reset()
-    self.state['tag'] = False
-    self.state['choice'] = False
-    self.state['comment'] = False
-    while not self.bracket_queue.empty():
+    self._state['tag'] = False
+    self._state['choice'] = False
+    self._state['comment'] = False
+    while not self._bracket_queue.empty():
         try:
-            self.bracket_queue.get(False)
+            self._bracket_queue.get(False)
         except Empty:
             continue
-    self.bracket_queue.task_done()
+    self._bracket_queue.task_done()
+
 }
 
-// ============================== DOCUMENT ROOT ==============================
+// =============================== DOCUMENT ROOT ==============================
 
 document
 locals []
@@ -101,18 +108,18 @@ locals []
 {
 
 content_node = ContentNode()
-self.node_stack.push(content_node)
+self._node_stack.push(content_node)
 
 }
 @after
 {
 
-root_node = self.node_stack.peek()
-root_node.start = self.get_start_pos($ctx)
-root_node.stop = self.get_stop_pos($ctx)
+root_node = self._node_stack.peek()
+root_node.start = self._get_start_pos($ctx)
+root_node.stop = self._get_stop_pos($ctx)
 
 }
-:
+    :
     (
         polyadic_tag
         |
@@ -130,19 +137,20 @@ locals []
 {
 
 content_node = ContentNode()
-self.node_stack.push(content_node)
+self._node_stack.push(content_node)
 
 }
 @after
 {
 
-content_node = self.node_stack.pop()
-content_node.start = self.get_start_pos($ctx)
-content_node.stop = self.get_stop_pos($ctx)
+content_node = self._node_stack.pop()
+content_node.start = self._get_start_pos($ctx)
+content_node.stop = self._get_stop_pos($ctx)
 
-self.node_stack.peek().add_child(content_node)
+self._node_stack.peek().add_child(content_node)
 
-} :
+}
+    :
     (
         unary_tag
         |
@@ -161,12 +169,13 @@ locals []
 @after
 {
 
-node.start = self.get_start_pos($ctx)
-node.stop = self.get_stop_pos($ctx)
-self.node_stack.peek().add_child(node)
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
+self._node_stack.peek().add_child(node)
 
 }
-    : var_chars+=DATA+
+    :
+    var_chars+=DATA+
 {
 
 data_str = ''.join([c.text for c in $var_chars])
@@ -191,17 +200,17 @@ locals []
 {
 
 choice_node = ChoiceNode()
-self.node_stack.push(choice_node)
+self._node_stack.push(choice_node)
 
 }
 @after
 {
 
-choice_node = self.node_stack.pop()
-choice_node.start = self.get_start_pos($ctx)
-choice_node.stop = self.get_stop_pos($ctx)
+choice_node = self._node_stack.pop()
+choice_node.start = self._get_start_pos($ctx)
+choice_node.stop = self._get_stop_pos($ctx)
 
-self.node_stack.peek().add_child(choice_node)
+self._node_stack.peek().add_child(choice_node)
 
 }
     :
@@ -229,8 +238,8 @@ node = ChoiceNode()
 @after
 {
 
-node.start = self.get_start_pos($ctx)
-node.stop = self.get_stop_pos($ctx)
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
 
 for child_node in node.children:
     if not isinstance(child_node, (DataNode,)):
@@ -238,10 +247,10 @@ for child_node in node.children:
     child_node.start = node.start
     child_node.stop = node.stop
 
-self.node_stack.peek().add_child(node)
+self._node_stack.peek().add_child(node)
 
 }
-:
+    :
     LLL_BRACE
     var_chars+=DATA+
     RRR_BRACE
@@ -263,9 +272,9 @@ locals []
 @after
 {
 
-node.start = self.get_start_pos($ctx)
-node.stop = self.get_stop_pos($ctx)
-self.node_stack.peek().add_child(node)
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
+self._node_stack.peek().add_child(node)
 
 }
     :
@@ -325,9 +334,9 @@ locals []
 @after
 {
 
-node.start = self.get_start_pos($ctx)
-node.stop = self.get_stop_pos($ctx)
-self.node_stack.peek().add_child(node)
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
+self._node_stack.peek().add_child(node)
 
 }
     :
@@ -504,9 +513,9 @@ locals [__data__=dict()]
 @after
 {
 
-node.start = self.get_start_pos($ctx)
-node.stop = self.get_stop_pos($ctx)
-self.node_stack.peek().add_child(node)
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
+self._node_stack.peek().add_child(node)
 
 }
     :
@@ -521,122 +530,122 @@ $ctx.__data__ = {
 }
 
 node = CommentNode(content)
-node.start = self.get_start_pos($ctx)
-node.stop = self.get_stop_pos($ctx)
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
 
 } ;
 
 // ================================ LEXER RULES ===============================
 
-LL_BRACK : {not self.state['tag'] and not self.state['comment']}?
+LL_BRACK : {not self._state['tag'] and not self._state['comment']}?
            '[['
 {
-self.open_bracket(current='[[')
-self.state['tag'] = True
+self._open_bracket(current='[[')
+self._state['tag'] = True
 } ;
 
-RR_BRACK : {self.state['tag'] and not self.state['comment']}?
+RR_BRACK : {self._state['tag'] and not self._state['comment']}?
            ']]'
 {
-self.close_bracket(expected='[[')
-self.state['tag'] = False
+self._close_bracket(expected='[[')
+self._state['tag'] = False
 } ;
 
-LL_COMMENT_BRACK : {not self.state['tag'] and not self.state['comment']}?
+LL_COMMENT_BRACK : {not self._state['tag'] and not self._state['comment']}?
                    '[[#'
 {
-self.open_bracket(current='[[')
-self.state['tag'] = True
-self.state['comment'] = True
+self._open_bracket(current='[[')
+self._state['tag'] = True
+self._state['comment'] = True
 } ;
 
-RR_COMMENT_BRACK : {self.state['tag'] and self.state['comment']}?
+RR_COMMENT_BRACK : {self._state['tag'] and self._state['comment']}?
                    ']]'
 {
-self.close_bracket(expected='[[')
-self.state['tag'] = False
-self.state['comment'] = False
+self._close_bracket(expected='[[')
+self._state['tag'] = False
+self._state['comment'] = False
 } ;
 
 L_BRACK  : '['
 {
-self.open_bracket(current='[')
+self._open_bracket(current='[')
 } ;
 
 R_BRACK  : ']'
 {
-self.close_bracket(expected='[')
+self._close_bracket(expected='[')
 } ;
 
 LL_PAREN : '(('
 {
-self.open_bracket(current='((')
+self._open_bracket(current='((')
 } ;
 
 RR_PAREN : '))'
 {
-self.close_bracket(expected='((')
+self._close_bracket(expected='((')
 } ;
 
 L_PAREN  : '('
 {
-self.open_bracket(current='(')
+self._open_bracket(current='(')
 } ;
 
 R_PAREN  : ')'
 {
-self.close_bracket(expected='(')
+self._close_bracket(expected='(')
 } ;
 
 LLL_BRACE : '{{{'
 {
-self.open_bracket(current='{{{')
-self.state['choice_short'] = True
+self._open_bracket(current='{{{')
+self._state['choice_short'] = True
 } ;
 RRR_BRACE : '}}}'
 {
-self.close_bracket(expected='{{{')
-self.state['choice_short'] = False
+self._close_bracket(expected='{{{')
+self._state['choice_short'] = False
 } ;
 
 LL_BRACE : '{{'
 {
-self.open_bracket(current='{{')
-self.state['choice'] = True
+self._open_bracket(current='{{')
+self._state['choice'] = True
 } ;
 
 RR_BRACE : '}}'
 {
-self.close_bracket(expected='{{')
-self.state['choice'] = False
+self._close_bracket(expected='{{')
+self._state['choice'] = False
 } ;
 
 L_BRACE : '{'
 {
-self.open_bracket(current='{')
+self._open_bracket(current='{')
 } ;
 
 R_BRACE : '}'
 {
-self.close_bracket(expected='{')
+self._close_bracket(expected='{')
 } ;
 
-ENTITY_TYPE  : {self.state['tag'] and not self.state['comment']}?
+ENTITY_TYPE  : {self._state['tag'] and not self._state['comment']}?
                (PERCENT | TILDA | COMMAT);
 
-BOOL         : {self.state['tag'] and not self.state['comment']}?
+BOOL         : {self._state['tag'] and not self._state['comment']}?
                'True' | 'False' ;
 
-NUMBER       : {self.state['tag'] and not self.state['comment']}?
+NUMBER       : {self._state['tag'] and not self._state['comment']}?
                INT_NUMBER | FLOAT_NUMBER ;
 
-INT_NUMBER   : {self.state['tag'] and not self.state['comment']}?
+INT_NUMBER   : {self._state['tag'] and not self._state['comment']}?
                ('0'..'9')+ ;
 
-FLOAT_NUMBER : {self.state['tag'] and not self.state['comment']}?
+FLOAT_NUMBER : {self._state['tag'] and not self._state['comment']}?
                INT_NUMBER+ DOT INT_NUMBER* ;
 
-STRING       : {self.state['tag'] and not self.state['comment']}?
+STRING       : {self._state['tag'] and not self._state['comment']}?
              (
                 '\'' ( STRING_ESC_SEQ | ~[\\\r\n\f'] )* '\''
                 |
@@ -646,11 +655,11 @@ STRING       : {self.state['tag'] and not self.state['comment']}?
 fragment STRING_ESC_SEQ : '\\' .;
 
 
-WS	         : {self.state['tag'] and not self.state['comment']}?
+WS	         : {self._state['tag'] and not self._state['comment']}?
                ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+
                -> channel(HIDDEN) ;
 
-NAME         : {self.state['tag'] and not self.state['comment']}?
+NAME         : {self._state['tag'] and not self._state['comment']}?
                NAME_LETTERS+
                (
                     NAME_LETTERS
@@ -662,23 +671,23 @@ fragment NAME_LETTERS : 'a'..'z' | 'A'..'Z' | '_' | '-';
 fragment NAME_NUMBERS : '0'..'9';
 
 
-COMMENT_DATA : {self.state['tag'] and self.state['comment']}? . ;
-DATA         : {not self.state['tag']}? . ;
+COMMENT_DATA : {self._state['tag'] and self._state['comment']}? . ;
+DATA         : {not self._state['tag']}? . ;
 
-DOUBLE_PIPE  : {self.state['choice'] and not self.state['tag']}? '||' ;
-PIPE         : {self.state['tag']}? '|' ;
-SLASH        : {self.state['tag']}? '/' ;
-AMP	         : {self.state['tag']}? '&' ;
-HASH	     : {self.state['tag']}? '#' ;
-GREATER      : {self.state['tag']}? '>' ;
-HAT	         : {self.state['tag']}? '^' ;
-EQUAL        : {self.state['tag']}? '=' ;
-BANG         : {self.state['tag']}? '!' ;
-DOT          : {self.state['tag']}? '.' ;
-COMMA        : {self.state['tag']}? ',' ;
-PERCENT      : {self.state['tag']}? '%' ;
-TILDA        : {self.state['tag']}? '~' ;
-COMMAT       : {self.state['tag']}? '@' ;
-QUESTION     : {self.state['tag']}? '?' ;
+DOUBLE_PIPE  : {self._state['choice'] and not self._state['tag']}? '||' ;
+PIPE         : {self._state['tag']}? '|' ;
+SLASH        : {self._state['tag']}? '/' ;
+AMP	         : {self._state['tag']}? '&' ;
+HASH	     : {self._state['tag']}? '#' ;
+GREATER      : {self._state['tag']}? '>' ;
+HAT	         : {self._state['tag']}? '^' ;
+EQUAL        : {self._state['tag']}? '=' ;
+BANG         : {self._state['tag']}? '!' ;
+DOT          : {self._state['tag']}? '.' ;
+COMMA        : {self._state['tag']}? ',' ;
+PERCENT      : {self._state['tag']}? '%' ;
+TILDA        : {self._state['tag']}? '~' ;
+COMMAT       : {self._state['tag']}? '@' ;
+QUESTION     : {self._state['tag']}? '?' ;
 
 UNKNOWN      : . ;

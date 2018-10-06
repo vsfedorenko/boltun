@@ -6,6 +6,7 @@ from io import StringIO
 import sys
 
 
+
 import ast
 import logging
 
@@ -16,6 +17,7 @@ from .node import AliasNode, CallNode, ChoiceNode, CommentNode, ContentNode, \
 from ...util.collections import Stack
 
 logger = logging.getLogger(__name__)
+
 
 def serializedATN():
     with StringIO() as buf:
@@ -208,21 +210,28 @@ class BoltunParser ( Parser ):
 
 
 
-    @property
-    def node_stack(self):
-        try:
-            return self._node_stack
-        except AttributeError:
-            self._node_stack = Stack()
-            self._node_stack.push(RootNode())
-            return self._node_stack
+    def parse(self):
+        self.reset()
+        self.document()
 
-    def get_start_pos(self, ctx):
+        root_node = self._node_stack.pop()
+        return root_node
+
+    @property
+    def _node_stack(self):
+        try:
+            return self.__node_stack
+        except AttributeError:
+            self.__node_stack = Stack()
+            self.__node_stack.push(RootNode())
+            return self.__node_stack
+
+    def _get_start_pos(self, ctx):
         if not ctx:
             return None
         return ctx.start.start if ctx.start else None
 
-    def get_stop_pos(self, ctx):
+    def _get_stop_pos(self, ctx):
         if not ctx:
             return None
         return ctx.stop.stop if ctx.stop else None
@@ -279,7 +288,7 @@ class BoltunParser ( Parser ):
 
 
         content_node = ContentNode()
-        self.node_stack.push(content_node)
+        self._node_stack.push(content_node)
 
 
         self._la = 0 # Token type
@@ -318,9 +327,9 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            root_node = self.node_stack.peek()
-            root_node.start = self.get_start_pos(localctx)
-            root_node.stop = self.get_stop_pos(localctx)
+            root_node = self._node_stack.peek()
+            root_node.start = self._get_start_pos(localctx)
+            root_node.stop = self._get_stop_pos(localctx)
 
 
         except RecognitionException as re:
@@ -378,7 +387,7 @@ class BoltunParser ( Parser ):
 
 
         content_node = ContentNode()
-        self.node_stack.push(content_node)
+        self._node_stack.push(content_node)
 
 
         try:
@@ -412,11 +421,11 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            content_node = self.node_stack.pop()
-            content_node.start = self.get_start_pos(localctx)
-            content_node.stop = self.get_stop_pos(localctx)
+            content_node = self._node_stack.pop()
+            content_node.start = self._get_start_pos(localctx)
+            content_node.stop = self._get_stop_pos(localctx)
 
-            self.node_stack.peek().add_child(content_node)
+            self._node_stack.peek().add_child(content_node)
 
 
         except RecognitionException as re:
@@ -495,9 +504,9 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            node.start = self.get_start_pos(localctx)
-            node.stop = self.get_stop_pos(localctx)
-            self.node_stack.peek().add_child(node)
+            node.start = self._get_start_pos(localctx)
+            node.stop = self._get_stop_pos(localctx)
+            self._node_stack.peek().add_child(node)
 
 
         except RecognitionException as re:
@@ -698,7 +707,7 @@ class BoltunParser ( Parser ):
 
 
         choice_node = ChoiceNode()
-        self.node_stack.push(choice_node)
+        self._node_stack.push(choice_node)
 
 
         self._la = 0 # Token type
@@ -743,11 +752,11 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            choice_node = self.node_stack.pop()
-            choice_node.start = self.get_start_pos(localctx)
-            choice_node.stop = self.get_stop_pos(localctx)
+            choice_node = self._node_stack.pop()
+            choice_node.start = self._get_start_pos(localctx)
+            choice_node.stop = self._get_stop_pos(localctx)
 
-            self.node_stack.peek().add_child(choice_node)
+            self._node_stack.peek().add_child(choice_node)
 
 
         except RecognitionException as re:
@@ -836,8 +845,8 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            node.start = self.get_start_pos(localctx)
-            node.stop = self.get_stop_pos(localctx)
+            node.start = self._get_start_pos(localctx)
+            node.stop = self._get_stop_pos(localctx)
 
             for child_node in node.children:
                 if not isinstance(child_node, (DataNode,)):
@@ -845,7 +854,7 @@ class BoltunParser ( Parser ):
                 child_node.start = node.start
                 child_node.stop = node.stop
 
-            self.node_stack.peek().add_child(node)
+            self._node_stack.peek().add_child(node)
 
 
         except RecognitionException as re:
@@ -1024,9 +1033,9 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            node.start = self.get_start_pos(localctx)
-            node.stop = self.get_stop_pos(localctx)
-            self.node_stack.peek().add_child(node)
+            node.start = self._get_start_pos(localctx)
+            node.stop = self._get_stop_pos(localctx)
+            self._node_stack.peek().add_child(node)
 
 
         except RecognitionException as re:
@@ -1217,9 +1226,9 @@ class BoltunParser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
 
 
-            node.start = self.get_start_pos(localctx)
-            node.stop = self.get_stop_pos(localctx)
-            self.node_stack.peek().add_child(node)
+            node.start = self._get_start_pos(localctx)
+            node.stop = self._get_stop_pos(localctx)
+            self._node_stack.peek().add_child(node)
 
 
         except RecognitionException as re:
@@ -1771,16 +1780,16 @@ class BoltunParser ( Parser ):
             }
 
             node = CommentNode(content)
-            node.start = self.get_start_pos(localctx)
-            node.stop = self.get_stop_pos(localctx)
+            node.start = self._get_start_pos(localctx)
+            node.stop = self._get_stop_pos(localctx)
 
 
             self._ctx.stop = self._input.LT(-1)
 
 
-            node.start = self.get_start_pos(localctx)
-            node.stop = self.get_stop_pos(localctx)
-            self.node_stack.peek().add_child(node)
+            node.start = self._get_start_pos(localctx)
+            node.stop = self._get_stop_pos(localctx)
+            self._node_stack.peek().add_child(node)
 
 
         except RecognitionException as re:

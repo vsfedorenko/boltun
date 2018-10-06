@@ -1,6 +1,7 @@
 # Generated from /Users/vfedorenko/Developer/Business/Projects/NeuralNetworks/nlu_data_generator/src/boltun/parser/grammar/Boltun.g4 by ANTLR 4.7
 from antlr4 import *
 
+
 import ast
 import logging
 
@@ -11,6 +12,7 @@ from .node import AliasNode, CallNode, ChoiceNode, CommentNode, ContentNode, \
 from ...util.collections import Stack
 
 logger = logging.getLogger(__name__)
+
 
 
 # This class defines a complete generic visitor for a parse tree produced by BoltunParser.

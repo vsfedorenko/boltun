@@ -7,16 +7,13 @@ import sys
 
 
 
-import re
-import importlib
 import logging
-
-from antlr4 import *
 
 from Queue import Empty, LifoQueue
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
+
 
 
 def serializedATN():
@@ -252,40 +249,41 @@ class BoltunLexer(Lexer):
 
 
     @property
-    def state(self):
+    def _state(self):
         try:
-            return self._state
+            return self.__state
         except AttributeError:
-            self._state = defaultdict(bool)
-            return self._state
+            self.__state = defaultdict(bool)
+            return self.__state
 
     @property
-    def bracket_queue(self):
+    def _bracket_queue(self):
         try:
-            return self._bracket_queue
+            return self.__bracket_queue
         except AttributeError:
-            self._bracket_queue = LifoQueue()
-            return self._bracket_queue
+            self.__bracket_queue = LifoQueue()
+            return self.__bracket_queue
 
-    def open_bracket(self, current):
-        self.bracket_queue.put(current)
+    def _open_bracket(self, current):
+        self._bracket_queue.put(current)
 
-    def close_bracket(self, expected):
-        if self.bracket_queue.get() == expected:
+    def _close_bracket(self, expected):
+        if self._bracket_queue.get() == expected:
             return True
         return None
 
     def reset(self):
         super(BoltunLexer, self).reset()
-        self.state['tag'] = False
-        self.state['choice'] = False
-        self.state['comment'] = False
-        while not self.bracket_queue.empty():
+        self._state['tag'] = False
+        self._state['choice'] = False
+        self._state['comment'] = False
+        while not self._bracket_queue.empty():
             try:
-                self.bracket_queue.get(False)
+                self._bracket_queue.get(False)
             except Empty:
                 continue
-        self.bracket_queue.task_done()
+        self._bracket_queue.task_done()
+
 
 
     def action(self, localctx, ruleIndex, actionIndex):
@@ -317,122 +315,122 @@ class BoltunLexer(Lexer):
     def LL_BRACK_action(self, localctx , actionIndex):
         if actionIndex == 0:
 
-            self.open_bracket(current='[[')
-            self.state['tag'] = True
+            self._open_bracket(current='[[')
+            self._state['tag'] = True
 
      
 
     def RR_BRACK_action(self, localctx , actionIndex):
         if actionIndex == 1:
 
-            self.close_bracket(expected='[[')
-            self.state['tag'] = False
+            self._close_bracket(expected='[[')
+            self._state['tag'] = False
 
      
 
     def LL_COMMENT_BRACK_action(self, localctx , actionIndex):
         if actionIndex == 2:
 
-            self.open_bracket(current='[[')
-            self.state['tag'] = True
-            self.state['comment'] = True
+            self._open_bracket(current='[[')
+            self._state['tag'] = True
+            self._state['comment'] = True
 
      
 
     def RR_COMMENT_BRACK_action(self, localctx , actionIndex):
         if actionIndex == 3:
 
-            self.close_bracket(expected='[[')
-            self.state['tag'] = False
-            self.state['comment'] = False
+            self._close_bracket(expected='[[')
+            self._state['tag'] = False
+            self._state['comment'] = False
 
      
 
     def L_BRACK_action(self, localctx , actionIndex):
         if actionIndex == 4:
 
-            self.open_bracket(current='[')
+            self._open_bracket(current='[')
 
      
 
     def R_BRACK_action(self, localctx , actionIndex):
         if actionIndex == 5:
 
-            self.close_bracket(expected='[')
+            self._close_bracket(expected='[')
 
      
 
     def LL_PAREN_action(self, localctx , actionIndex):
         if actionIndex == 6:
 
-            self.open_bracket(current='((')
+            self._open_bracket(current='((')
 
      
 
     def RR_PAREN_action(self, localctx , actionIndex):
         if actionIndex == 7:
 
-            self.close_bracket(expected='((')
+            self._close_bracket(expected='((')
 
      
 
     def L_PAREN_action(self, localctx , actionIndex):
         if actionIndex == 8:
 
-            self.open_bracket(current='(')
+            self._open_bracket(current='(')
 
      
 
     def R_PAREN_action(self, localctx , actionIndex):
         if actionIndex == 9:
 
-            self.close_bracket(expected='(')
+            self._close_bracket(expected='(')
 
      
 
     def LLL_BRACE_action(self, localctx , actionIndex):
         if actionIndex == 10:
 
-            self.open_bracket(current='{{{')
-            self.state['choice_short'] = True
+            self._open_bracket(current='{{{')
+            self._state['choice_short'] = True
 
      
 
     def RRR_BRACE_action(self, localctx , actionIndex):
         if actionIndex == 11:
 
-            self.close_bracket(expected='{{{')
-            self.state['choice_short'] = False
+            self._close_bracket(expected='{{{')
+            self._state['choice_short'] = False
 
      
 
     def LL_BRACE_action(self, localctx , actionIndex):
         if actionIndex == 12:
 
-            self.open_bracket(current='{{')
-            self.state['choice'] = True
+            self._open_bracket(current='{{')
+            self._state['choice'] = True
 
      
 
     def RR_BRACE_action(self, localctx , actionIndex):
         if actionIndex == 13:
 
-            self.close_bracket(expected='{{')
-            self.state['choice'] = False
+            self._close_bracket(expected='{{')
+            self._state['choice'] = False
 
      
 
     def L_BRACE_action(self, localctx , actionIndex):
         if actionIndex == 14:
 
-            self.open_bracket(current='{')
+            self._open_bracket(current='{')
 
      
 
     def R_BRACE_action(self, localctx , actionIndex):
         if actionIndex == 15:
 
-            self.close_bracket(expected='{')
+            self._close_bracket(expected='{')
 
      
 
@@ -477,147 +475,147 @@ class BoltunLexer(Lexer):
 
     def LL_BRACK_sempred(self, localctx, predIndex):
             if predIndex == 0:
-                return not self.state['tag'] and not self.state['comment']
+                return not self._state['tag'] and not self._state['comment']
          
 
     def RR_BRACK_sempred(self, localctx, predIndex):
             if predIndex == 1:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def LL_COMMENT_BRACK_sempred(self, localctx, predIndex):
             if predIndex == 2:
-                return not self.state['tag'] and not self.state['comment']
+                return not self._state['tag'] and not self._state['comment']
          
 
     def RR_COMMENT_BRACK_sempred(self, localctx, predIndex):
             if predIndex == 3:
-                return self.state['tag'] and self.state['comment']
+                return self._state['tag'] and self._state['comment']
          
 
     def ENTITY_TYPE_sempred(self, localctx, predIndex):
             if predIndex == 4:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def BOOL_sempred(self, localctx, predIndex):
             if predIndex == 5:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def NUMBER_sempred(self, localctx, predIndex):
             if predIndex == 6:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def INT_NUMBER_sempred(self, localctx, predIndex):
             if predIndex == 7:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def FLOAT_NUMBER_sempred(self, localctx, predIndex):
             if predIndex == 8:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def STRING_sempred(self, localctx, predIndex):
             if predIndex == 9:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def WS_sempred(self, localctx, predIndex):
             if predIndex == 10:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def NAME_sempred(self, localctx, predIndex):
             if predIndex == 11:
-                return self.state['tag'] and not self.state['comment']
+                return self._state['tag'] and not self._state['comment']
          
 
     def COMMENT_DATA_sempred(self, localctx, predIndex):
             if predIndex == 12:
-                return self.state['tag'] and self.state['comment']
+                return self._state['tag'] and self._state['comment']
          
 
     def DATA_sempred(self, localctx, predIndex):
             if predIndex == 13:
-                return not self.state['tag']
+                return not self._state['tag']
          
 
     def DOUBLE_PIPE_sempred(self, localctx, predIndex):
             if predIndex == 14:
-                return self.state['choice'] and not self.state['tag']
+                return self._state['choice'] and not self._state['tag']
          
 
     def PIPE_sempred(self, localctx, predIndex):
             if predIndex == 15:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def SLASH_sempred(self, localctx, predIndex):
             if predIndex == 16:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def AMP_sempred(self, localctx, predIndex):
             if predIndex == 17:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def HASH_sempred(self, localctx, predIndex):
             if predIndex == 18:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def GREATER_sempred(self, localctx, predIndex):
             if predIndex == 19:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def HAT_sempred(self, localctx, predIndex):
             if predIndex == 20:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def EQUAL_sempred(self, localctx, predIndex):
             if predIndex == 21:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def BANG_sempred(self, localctx, predIndex):
             if predIndex == 22:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def DOT_sempred(self, localctx, predIndex):
             if predIndex == 23:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def COMMA_sempred(self, localctx, predIndex):
             if predIndex == 24:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def PERCENT_sempred(self, localctx, predIndex):
             if predIndex == 25:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def TILDA_sempred(self, localctx, predIndex):
             if predIndex == 26:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def COMMAT_sempred(self, localctx, predIndex):
             if predIndex == 27:
-                return self.state['tag']
+                return self._state['tag']
          
 
     def QUESTION_sempred(self, localctx, predIndex):
             if predIndex == 28:
-                return self.state['tag']
+                return self._state['tag']
          
 
 
