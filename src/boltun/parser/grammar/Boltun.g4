@@ -148,6 +148,7 @@ entity_tag
     :
     LL_BRACK
     var_type=entity_type
+    var_optional=QUESTION?
     name=NAME
     (HASH var_ref_names+=NAME (HASH var_ref_names+=NAME)*)?
     var_optional=QUESTION?
@@ -188,6 +189,7 @@ call_tag
     :
     LL_BRACK
     GREATER
+    var_optional=QUESTION?
     name=NAME
     var_optional=QUESTION?
     var_attr=attr

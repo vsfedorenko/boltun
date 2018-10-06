@@ -24,9 +24,9 @@ class MyTestCase(unittest.TestCase):
         # input_str = "{{ first || second || third }}"
         # input_str = "{{ first || [[% intent ]] [[# comment ]] || third }}"
         input_str = \
-            "hello [[% some_intent # another # ref1 | join(1, 15, 1., 'Hello', left=True) | append ]], " \
+            "hello [[%? some_intent # another # ref1 | join(1, 15, 1., 'Hello', left=True) | append ]], " \
             "and call env func here [[> env('JAVA_HOME') | lower ]]" \
-            "then call eval func here [[> eval?('1 + 2')? | lower ]] " \
+            "then call eval func here [[>? eval?('1 + 2')? | lower ]] " \
             "and comment here [[# comment hello commentworld!! My name is comment ]] " \
             "and here [[# comment2 ___#@!@#!#$324~ ]] " \
             "{{ then select [[> env('THIS_VAR') ]] || or select [[> env('THAT_VAR') ]] }} " \
