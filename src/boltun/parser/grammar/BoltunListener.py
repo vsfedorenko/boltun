@@ -6,7 +6,7 @@ import logging
 
 from antlr4 import *
 
-from .nodes import AliasNode, CallNode, ChoiceNode, CommentNode, ContentNode, \
+from .node import AliasNode, CallNode, ChoiceNode, CommentNode, ContentNode, \
     DataNode, Filter, IntentNode, RootNode, SlotNode
 from ...util.collections import Stack
 
