@@ -20,72 +20,79 @@ logger = logging.getLogger(__name__)
 def serializedATN():
     with StringIO() as buf:
         buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
-        buf.write(u")\u00b1\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
+        buf.write(u"*\u00bc\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t")
         buf.write(u"\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r")
         buf.write(u"\4\16\t\16\4\17\t\17\4\20\t\20\3\2\3\2\7\2#\n\2\f\2\16")
         buf.write(u"\2&\13\2\3\2\5\2)\n\2\3\3\3\3\6\3-\n\3\r\3\16\3.\3\4")
         buf.write(u"\6\4\62\n\4\r\4\16\4\63\3\4\3\4\3\5\3\5\3\6\3\6\3\6\5")
         buf.write(u"\6=\n\6\3\7\3\7\5\7A\n\7\3\7\3\7\5\7E\n\7\7\7G\n\7\f")
-        buf.write(u"\7\16\7J\13\7\3\7\3\7\3\b\3\b\3\b\3\b\5\bR\n\b\3\b\7")
-        buf.write(u"\bU\n\b\f\b\16\bX\13\b\3\b\3\b\3\b\3\t\3\t\3\n\3\n\3")
-        buf.write(u"\n\3\n\5\nc\n\n\3\n\3\n\5\ng\n\n\3\n\7\nj\n\n\f\n\16")
-        buf.write(u"\nm\13\n\3\n\3\n\3\n\3\13\3\13\3\13\5\13u\n\13\3\13\5")
-        buf.write(u"\13x\n\13\3\13\5\13{\n\13\3\13\3\13\3\f\3\f\3\f\3\f\7")
-        buf.write(u"\f\u0083\n\f\f\f\16\f\u0086\13\f\3\f\3\f\3\f\7\f\u008b")
-        buf.write(u"\n\f\f\f\16\f\u008e\13\f\3\f\3\f\7\f\u0092\n\f\f\f\16")
-        buf.write(u"\f\u0095\13\f\5\f\u0097\n\f\3\f\3\f\3\f\3\r\3\r\3\r\3")
-        buf.write(u"\16\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3\20\3\20\7\20")
-        buf.write(u"\u00a9\n\20\f\20\16\20\u00ac\13\20\3\20\3\20\3\20\3\20")
-        buf.write(u"\5HV\u00aa\2\21\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36")
-        buf.write(u"\2\3\4\2\23\24\27\27\2\u00b9\2$\3\2\2\2\4,\3\2\2\2\6")
-        buf.write(u"\61\3\2\2\2\b\67\3\2\2\2\n<\3\2\2\2\f>\3\2\2\2\16M\3")
-        buf.write(u"\2\2\2\20\\\3\2\2\2\22^\3\2\2\2\24q\3\2\2\2\26~\3\2\2")
-        buf.write(u"\2\30\u009b\3\2\2\2\32\u009e\3\2\2\2\34\u00a3\3\2\2\2")
-        buf.write(u"\36\u00a6\3\2\2\2 #\5\b\5\2!#\5\4\3\2\" \3\2\2\2\"!\3")
-        buf.write(u"\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%(\3\2\2\2&$\3\2")
-        buf.write(u"\2\2\')\7\2\2\3(\'\3\2\2\2()\3\2\2\2)\3\3\2\2\2*-\5\n")
-        buf.write(u"\6\2+-\5\6\4\2,*\3\2\2\2,+\3\2\2\2-.\3\2\2\2.,\3\2\2")
-        buf.write(u"\2./\3\2\2\2/\5\3\2\2\2\60\62\7\34\2\2\61\60\3\2\2\2")
-        buf.write(u"\62\63\3\2\2\2\63\61\3\2\2\2\63\64\3\2\2\2\64\65\3\2")
-        buf.write(u"\2\2\65\66\b\4\1\2\66\7\3\2\2\2\678\5\f\7\28\t\3\2\2")
-        buf.write(u"\29=\5\16\b\2:=\5\22\n\2;=\5\36\20\2<9\3\2\2\2<:\3\2")
-        buf.write(u"\2\2<;\3\2\2\2=\13\3\2\2\2>@\7\r\2\2?A\5\4\3\2@?\3\2")
-        buf.write(u"\2\2@A\3\2\2\2AH\3\2\2\2BD\7\30\2\2CE\5\4\3\2DC\3\2\2")
-        buf.write(u"\2DE\3\2\2\2EG\3\2\2\2FB\3\2\2\2GJ\3\2\2\2HI\3\2\2\2")
-        buf.write(u"HF\3\2\2\2IK\3\2\2\2JH\3\2\2\2KL\7\16\2\2L\r\3\2\2\2")
-        buf.write(u"MN\7\3\2\2NO\5\20\t\2OQ\7\33\2\2PR\7(\2\2QP\3\2\2\2Q")
-        buf.write(u"R\3\2\2\2RV\3\2\2\2SU\5\24\13\2TS\3\2\2\2UX\3\2\2\2V")
-        buf.write(u"W\3\2\2\2VT\3\2\2\2WY\3\2\2\2XV\3\2\2\2YZ\7\4\2\2Z[\b")
-        buf.write(u"\b\1\2[\17\3\2\2\2\\]\7\21\2\2]\21\3\2\2\2^_\7\3\2\2")
-        buf.write(u"_`\7\37\2\2`b\7\33\2\2ac\7(\2\2ba\3\2\2\2bc\3\2\2\2c")
-        buf.write(u"d\3\2\2\2df\5\26\f\2eg\7(\2\2fe\3\2\2\2fg\3\2\2\2gk\3")
-        buf.write(u"\2\2\2hj\5\24\13\2ih\3\2\2\2jm\3\2\2\2ki\3\2\2\2kl\3")
-        buf.write(u"\2\2\2ln\3\2\2\2mk\3\2\2\2no\7\4\2\2op\b\n\1\2p\23\3")
-        buf.write(u"\2\2\2qr\7\31\2\2rt\7\33\2\2su\7(\2\2ts\3\2\2\2tu\3\2")
-        buf.write(u"\2\2uw\3\2\2\2vx\5\26\f\2wv\3\2\2\2wx\3\2\2\2xz\3\2\2")
-        buf.write(u"\2y{\7(\2\2zy\3\2\2\2z{\3\2\2\2{|\3\2\2\2|}\b\13\1\2")
-        buf.write(u"}\25\3\2\2\2~\u0096\7\13\2\2\177\u0084\5\32\16\2\u0080")
-        buf.write(u"\u0081\7$\2\2\u0081\u0083\5\32\16\2\u0082\u0080\3\2\2")
-        buf.write(u"\2\u0083\u0086\3\2\2\2\u0084\u0082\3\2\2\2\u0084\u0085")
-        buf.write(u"\3\2\2\2\u0085\u0097\3\2\2\2\u0086\u0084\3\2\2\2\u0087")
-        buf.write(u"\u008c\5\30\r\2\u0088\u0089\7$\2\2\u0089\u008b\5\30\r")
-        buf.write(u"\2\u008a\u0088\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a")
-        buf.write(u"\3\2\2\2\u008c\u008d\3\2\2\2\u008d\u0093\3\2\2\2\u008e")
-        buf.write(u"\u008c\3\2\2\2\u008f\u0090\7$\2\2\u0090\u0092\5\32\16")
-        buf.write(u"\2\u0091\u008f\3\2\2\2\u0092\u0095\3\2\2\2\u0093\u0091")
-        buf.write(u"\3\2\2\2\u0093\u0094\3\2\2\2\u0094\u0097\3\2\2\2\u0095")
-        buf.write(u"\u0093\3\2\2\2\u0096\177\3\2\2\2\u0096\u0087\3\2\2\2")
-        buf.write(u"\u0097\u0098\3\2\2\2\u0098\u0099\7\f\2\2\u0099\u009a")
-        buf.write(u"\b\f\1\2\u009a\27\3\2\2\2\u009b\u009c\5\34\17\2\u009c")
-        buf.write(u"\u009d\b\r\1\2\u009d\31\3\2\2\2\u009e\u009f\7\33\2\2")
-        buf.write(u"\u009f\u00a0\7!\2\2\u00a0\u00a1\5\34\17\2\u00a1\u00a2")
-        buf.write(u"\b\16\1\2\u00a2\33\3\2\2\2\u00a3\u00a4\t\2\2\2\u00a4")
-        buf.write(u"\u00a5\b\17\1\2\u00a5\35\3\2\2\2\u00a6\u00aa\7\5\2\2")
-        buf.write(u"\u00a7\u00a9\7\22\2\2\u00a8\u00a7\3\2\2\2\u00a9\u00ac")
-        buf.write(u"\3\2\2\2\u00aa\u00ab\3\2\2\2\u00aa\u00a8\3\2\2\2\u00ab")
-        buf.write(u"\u00ad\3\2\2\2\u00ac\u00aa\3\2\2\2\u00ad\u00ae\7\6\2")
-        buf.write(u"\2\u00ae\u00af\b\20\1\2\u00af\37\3\2\2\2\31\"$(,.\63")
-        buf.write(u"<@DHQVbfktwz\u0084\u008c\u0093\u0096\u00aa")
+        buf.write(u"\7\16\7J\13\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\7\b")
+        buf.write(u"U\n\b\f\b\16\bX\13\b\5\bZ\n\b\3\b\5\b]\n\b\3\b\7\b`\n")
+        buf.write(u"\b\f\b\16\bc\13\b\3\b\3\b\3\b\3\t\3\t\3\n\3\n\3\n\3\n")
+        buf.write(u"\5\nn\n\n\3\n\3\n\5\nr\n\n\3\n\7\nu\n\n\f\n\16\nx\13")
+        buf.write(u"\n\3\n\3\n\3\n\3\13\3\13\3\13\5\13\u0080\n\13\3\13\5")
+        buf.write(u"\13\u0083\n\13\3\13\5\13\u0086\n\13\3\13\3\13\3\f\3\f")
+        buf.write(u"\3\f\3\f\7\f\u008e\n\f\f\f\16\f\u0091\13\f\3\f\3\f\3")
+        buf.write(u"\f\7\f\u0096\n\f\f\f\16\f\u0099\13\f\3\f\3\f\7\f\u009d")
+        buf.write(u"\n\f\f\f\16\f\u00a0\13\f\5\f\u00a2\n\f\3\f\3\f\3\f\3")
+        buf.write(u"\r\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\17\3\17\3\17\3")
+        buf.write(u"\20\3\20\7\20\u00b4\n\20\f\20\16\20\u00b7\13\20\3\20")
+        buf.write(u"\3\20\3\20\3\20\5Ha\u00b5\2\21\2\4\6\b\n\f\16\20\22\24")
+        buf.write(u"\26\30\32\34\36\2\3\4\2\23\24\27\27\2\u00c6\2$\3\2\2")
+        buf.write(u"\2\4,\3\2\2\2\6\61\3\2\2\2\b\67\3\2\2\2\n<\3\2\2\2\f")
+        buf.write(u">\3\2\2\2\16M\3\2\2\2\20g\3\2\2\2\22i\3\2\2\2\24|\3\2")
+        buf.write(u"\2\2\26\u0089\3\2\2\2\30\u00a6\3\2\2\2\32\u00a9\3\2\2")
+        buf.write(u"\2\34\u00ae\3\2\2\2\36\u00b1\3\2\2\2 #\5\b\5\2!#\5\4")
+        buf.write(u"\3\2\" \3\2\2\2\"!\3\2\2\2#&\3\2\2\2$\"\3\2\2\2$%\3\2")
+        buf.write(u"\2\2%(\3\2\2\2&$\3\2\2\2\')\7\2\2\3(\'\3\2\2\2()\3\2")
+        buf.write(u"\2\2)\3\3\2\2\2*-\5\n\6\2+-\5\6\4\2,*\3\2\2\2,+\3\2\2")
+        buf.write(u"\2-.\3\2\2\2.,\3\2\2\2./\3\2\2\2/\5\3\2\2\2\60\62\7\34")
+        buf.write(u"\2\2\61\60\3\2\2\2\62\63\3\2\2\2\63\61\3\2\2\2\63\64")
+        buf.write(u"\3\2\2\2\64\65\3\2\2\2\65\66\b\4\1\2\66\7\3\2\2\2\67")
+        buf.write(u"8\5\f\7\28\t\3\2\2\29=\5\16\b\2:=\5\22\n\2;=\5\36\20")
+        buf.write(u"\2<9\3\2\2\2<:\3\2\2\2<;\3\2\2\2=\13\3\2\2\2>@\7\r\2")
+        buf.write(u"\2?A\5\4\3\2@?\3\2\2\2@A\3\2\2\2AH\3\2\2\2BD\7\30\2\2")
+        buf.write(u"CE\5\4\3\2DC\3\2\2\2DE\3\2\2\2EG\3\2\2\2FB\3\2\2\2GJ")
+        buf.write(u"\3\2\2\2HI\3\2\2\2HF\3\2\2\2IK\3\2\2\2JH\3\2\2\2KL\7")
+        buf.write(u"\16\2\2L\r\3\2\2\2MN\7\3\2\2NO\5\20\t\2OY\7\33\2\2PQ")
+        buf.write(u"\7\37\2\2QV\7\33\2\2RS\7\37\2\2SU\7\33\2\2TR\3\2\2\2")
+        buf.write(u"UX\3\2\2\2VT\3\2\2\2VW\3\2\2\2WZ\3\2\2\2XV\3\2\2\2YP")
+        buf.write(u"\3\2\2\2YZ\3\2\2\2Z\\\3\2\2\2[]\7)\2\2\\[\3\2\2\2\\]")
+        buf.write(u"\3\2\2\2]a\3\2\2\2^`\5\24\13\2_^\3\2\2\2`c\3\2\2\2ab")
+        buf.write(u"\3\2\2\2a_\3\2\2\2bd\3\2\2\2ca\3\2\2\2de\7\4\2\2ef\b")
+        buf.write(u"\b\1\2f\17\3\2\2\2gh\7\21\2\2h\21\3\2\2\2ij\7\3\2\2j")
+        buf.write(u"k\7 \2\2km\7\33\2\2ln\7)\2\2ml\3\2\2\2mn\3\2\2\2no\3")
+        buf.write(u"\2\2\2oq\5\26\f\2pr\7)\2\2qp\3\2\2\2qr\3\2\2\2rv\3\2")
+        buf.write(u"\2\2su\5\24\13\2ts\3\2\2\2ux\3\2\2\2vt\3\2\2\2vw\3\2")
+        buf.write(u"\2\2wy\3\2\2\2xv\3\2\2\2yz\7\4\2\2z{\b\n\1\2{\23\3\2")
+        buf.write(u"\2\2|}\7\31\2\2}\177\7\33\2\2~\u0080\7)\2\2\177~\3\2")
+        buf.write(u"\2\2\177\u0080\3\2\2\2\u0080\u0082\3\2\2\2\u0081\u0083")
+        buf.write(u"\5\26\f\2\u0082\u0081\3\2\2\2\u0082\u0083\3\2\2\2\u0083")
+        buf.write(u"\u0085\3\2\2\2\u0084\u0086\7)\2\2\u0085\u0084\3\2\2\2")
+        buf.write(u"\u0085\u0086\3\2\2\2\u0086\u0087\3\2\2\2\u0087\u0088")
+        buf.write(u"\b\13\1\2\u0088\25\3\2\2\2\u0089\u00a1\7\13\2\2\u008a")
+        buf.write(u"\u008f\5\32\16\2\u008b\u008c\7%\2\2\u008c\u008e\5\32")
+        buf.write(u"\16\2\u008d\u008b\3\2\2\2\u008e\u0091\3\2\2\2\u008f\u008d")
+        buf.write(u"\3\2\2\2\u008f\u0090\3\2\2\2\u0090\u00a2\3\2\2\2\u0091")
+        buf.write(u"\u008f\3\2\2\2\u0092\u0097\5\30\r\2\u0093\u0094\7%\2")
+        buf.write(u"\2\u0094\u0096\5\30\r\2\u0095\u0093\3\2\2\2\u0096\u0099")
+        buf.write(u"\3\2\2\2\u0097\u0095\3\2\2\2\u0097\u0098\3\2\2\2\u0098")
+        buf.write(u"\u009e\3\2\2\2\u0099\u0097\3\2\2\2\u009a\u009b\7%\2\2")
+        buf.write(u"\u009b\u009d\5\32\16\2\u009c\u009a\3\2\2\2\u009d\u00a0")
+        buf.write(u"\3\2\2\2\u009e\u009c\3\2\2\2\u009e\u009f\3\2\2\2\u009f")
+        buf.write(u"\u00a2\3\2\2\2\u00a0\u009e\3\2\2\2\u00a1\u008a\3\2\2")
+        buf.write(u"\2\u00a1\u0092\3\2\2\2\u00a2\u00a3\3\2\2\2\u00a3\u00a4")
+        buf.write(u"\7\f\2\2\u00a4\u00a5\b\f\1\2\u00a5\27\3\2\2\2\u00a6\u00a7")
+        buf.write(u"\5\34\17\2\u00a7\u00a8\b\r\1\2\u00a8\31\3\2\2\2\u00a9")
+        buf.write(u"\u00aa\7\33\2\2\u00aa\u00ab\7\"\2\2\u00ab\u00ac\5\34")
+        buf.write(u"\17\2\u00ac\u00ad\b\16\1\2\u00ad\33\3\2\2\2\u00ae\u00af")
+        buf.write(u"\t\2\2\2\u00af\u00b0\b\17\1\2\u00b0\35\3\2\2\2\u00b1")
+        buf.write(u"\u00b5\7\5\2\2\u00b2\u00b4\7\22\2\2\u00b3\u00b2\3\2\2")
+        buf.write(u"\2\u00b4\u00b7\3\2\2\2\u00b5\u00b6\3\2\2\2\u00b5\u00b3")
+        buf.write(u"\3\2\2\2\u00b6\u00b8\3\2\2\2\u00b7\u00b5\3\2\2\2\u00b8")
+        buf.write(u"\u00b9\7\6\2\2\u00b9\u00ba\b\20\1\2\u00ba\37\3\2\2\2")
+        buf.write(u"\33\"$(,.\63<@DHVY\\amqv\177\u0082\u0085\u008f\u0097")
+        buf.write(u"\u009e\u00a1\u00b5")
         return buf.getvalue()
 
 
@@ -109,9 +116,9 @@ class BoltunParser ( Parser ):
                       u"RR_BRACE", u"L_BRACE", u"R_BRACE", u"ENTITY_TYPE", 
                       u"COMMENT_DATA", u"BOOL", u"NUMBER", u"INT_NUMBER", 
                       u"FLOAT_NUMBER", u"STRING", u"DOUBLE_PIPE", u"PIPE", 
-                      u"WS", u"NAME", u"DATA", u"SLASH", u"AMP", u"GREATER", 
-                      u"HAT", u"EQUAL", u"BANG", u"DOT", u"COMMA", u"PERCENT", 
-                      u"TILDA", u"COMMAT", u"QUESTION", u"UNKNOWN" ]
+                      u"WS", u"NAME", u"DATA", u"SLASH", u"AMP", u"HASH", 
+                      u"GREATER", u"HAT", u"EQUAL", u"BANG", u"DOT", u"COMMA", 
+                      u"PERCENT", u"TILDA", u"COMMAT", u"QUESTION", u"UNKNOWN" ]
 
     RULE_document = 0
     RULE_content = 1
@@ -163,17 +170,18 @@ class BoltunParser ( Parser ):
     DATA=26
     SLASH=27
     AMP=28
-    GREATER=29
-    HAT=30
-    EQUAL=31
-    BANG=32
-    DOT=33
-    COMMA=34
-    PERCENT=35
-    TILDA=36
-    COMMAT=37
-    QUESTION=38
-    UNKNOWN=39
+    HASH=29
+    GREATER=30
+    HAT=31
+    EQUAL=32
+    BANG=33
+    DOT=34
+    COMMA=35
+    PERCENT=36
+    TILDA=37
+    COMMAT=38
+    QUESTION=39
+    UNKNOWN=40
 
     def __init__(self, input, output=sys.stdout):
         super(BoltunParser, self).__init__(input, output=output)
@@ -676,6 +684,8 @@ class BoltunParser ( Parser ):
             self.parser = parser
             self.var_type = None # Entity_typeContext
             self.name = None # Token
+            self._NAME = None # Token
+            self.var_ref_names = list() # of Tokens
             self.var_optional = None # Token
             self._fltr = None # FltrContext
             self.var_fltrs = list() # of FltrContexts
@@ -690,8 +700,17 @@ class BoltunParser ( Parser ):
             return self.getTypedRuleContext(BoltunParser.Entity_typeContext,0)
 
 
-        def NAME(self):
-            return self.getToken(BoltunParser.NAME, 0)
+        def NAME(self, i=None):
+            if i is None:
+                return self.getTokens(BoltunParser.NAME)
+            else:
+                return self.getToken(BoltunParser.NAME, i)
+
+        def HASH(self, i=None):
+            if i is None:
+                return self.getTokens(BoltunParser.HASH)
+            else:
+                return self.getToken(BoltunParser.HASH, i)
 
         def QUESTION(self):
             return self.getToken(BoltunParser.QUESTION, 0)
@@ -736,27 +755,51 @@ class BoltunParser ( Parser ):
             localctx.var_type = self.entity_type()
             self.state = 77
             localctx.name = self.match(BoltunParser.NAME)
-            self.state = 79
+            self.state = 87
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==BoltunParser.HASH:
+                self.state = 78
+                self.match(BoltunParser.HASH)
+                self.state = 79
+                localctx._NAME = self.match(BoltunParser.NAME)
+                localctx.var_ref_names.append(localctx._NAME)
+                self.state = 84
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                while _la==BoltunParser.HASH:
+                    self.state = 80
+                    self.match(BoltunParser.HASH)
+                    self.state = 81
+                    localctx._NAME = self.match(BoltunParser.NAME)
+                    localctx.var_ref_names.append(localctx._NAME)
+                    self.state = 86
+                    self._errHandler.sync(self)
+                    _la = self._input.LA(1)
+
+
+
+            self.state = 90
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==BoltunParser.QUESTION:
-                self.state = 78
+                self.state = 89
                 localctx.var_optional = self.match(BoltunParser.QUESTION)
 
 
-            self.state = 84
+            self.state = 95
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,11,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
             while _alt!=1 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1+1:
-                    self.state = 81
+                    self.state = 92
                     localctx._fltr = self.fltr()
                     localctx.var_fltrs.append(localctx._fltr) 
-                self.state = 86
+                self.state = 97
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,11,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
 
-            self.state = 87
+            self.state = 98
             self.match(BoltunParser.RR_BRACK)
 
             node_class = None
@@ -771,7 +814,8 @@ class BoltunParser ( Parser ):
 
             name=(None if localctx.name is None else localctx.name.text)
             optional=localctx.var_optional is not None
-            node = node_class(name, optional)
+            ref_names=[v.text for v in localctx.var_ref_names]
+            node = node_class(name, ref_names, optional)
 
             for fltr in localctx.var_fltrs:
                 name = fltr.__data__.get('name')
@@ -826,7 +870,7 @@ class BoltunParser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_entity_type)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 90
+            self.state = 101
             self.match(BoltunParser.ENTITY_TYPE)
         except RecognitionException as re:
             localctx.exception = re
@@ -903,42 +947,42 @@ class BoltunParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 92
+            self.state = 103
             self.match(BoltunParser.LL_BRACK)
-            self.state = 93
+            self.state = 104
             self.match(BoltunParser.GREATER)
-            self.state = 94
-            localctx.name = self.match(BoltunParser.NAME)
-            self.state = 96
-            self._errHandler.sync(self)
-            _la = self._input.LA(1)
-            if _la==BoltunParser.QUESTION:
-                self.state = 95
-                localctx.var_optional = self.match(BoltunParser.QUESTION)
-
-
-            self.state = 98
-            localctx.var_attr = self.attr()
-            self.state = 100
-            self._errHandler.sync(self)
-            _la = self._input.LA(1)
-            if _la==BoltunParser.QUESTION:
-                self.state = 99
-                localctx.var_optional = self.match(BoltunParser.QUESTION)
-
-
             self.state = 105
+            localctx.name = self.match(BoltunParser.NAME)
+            self.state = 107
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==BoltunParser.QUESTION:
+                self.state = 106
+                localctx.var_optional = self.match(BoltunParser.QUESTION)
+
+
+            self.state = 109
+            localctx.var_attr = self.attr()
+            self.state = 111
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==BoltunParser.QUESTION:
+                self.state = 110
+                localctx.var_optional = self.match(BoltunParser.QUESTION)
+
+
+            self.state = 116
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==BoltunParser.PIPE:
-                self.state = 102
+                self.state = 113
                 localctx._fltr = self.fltr()
                 localctx.var_fltrs.append(localctx._fltr)
-                self.state = 107
+                self.state = 118
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 108
+            self.state = 119
             self.match(BoltunParser.RR_BRACK)
 
             args = localctx.var_attr.__data__.get('args', None)
@@ -1018,31 +1062,31 @@ class BoltunParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 111
+            self.state = 122
             self.match(BoltunParser.PIPE)
-            self.state = 112
+            self.state = 123
             localctx.var_name = self.match(BoltunParser.NAME)
-            self.state = 114
+            self.state = 125
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,15,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,17,self._ctx)
             if la_ == 1:
-                self.state = 113
+                self.state = 124
                 localctx.var_optional = self.match(BoltunParser.QUESTION)
 
 
-            self.state = 117
+            self.state = 128
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==BoltunParser.L_PAREN:
-                self.state = 116
+                self.state = 127
                 localctx.var_attr = self.attr()
 
 
-            self.state = 120
+            self.state = 131
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==BoltunParser.QUESTION:
-                self.state = 119
+                self.state = 130
                 localctx.var_optional = self.match(BoltunParser.QUESTION)
 
 
@@ -1129,57 +1173,57 @@ class BoltunParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 124
+            self.state = 135
             self.match(BoltunParser.L_PAREN)
-            self.state = 148
+            self.state = 159
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [BoltunParser.NAME]:
-                self.state = 125
+                self.state = 136
                 localctx._attr_kw_arg_def = self.attr_kw_arg_def()
                 localctx.var_attr_kw_arg_defs.append(localctx._attr_kw_arg_def)
-                self.state = 130
+                self.state = 141
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==BoltunParser.COMMA:
-                    self.state = 126
+                    self.state = 137
                     self.match(BoltunParser.COMMA)
-                    self.state = 127
+                    self.state = 138
                     localctx._attr_kw_arg_def = self.attr_kw_arg_def()
                     localctx.var_attr_kw_arg_defs.append(localctx._attr_kw_arg_def)
-                    self.state = 132
+                    self.state = 143
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
                 pass
             elif token in [BoltunParser.BOOL, BoltunParser.NUMBER, BoltunParser.STRING]:
-                self.state = 133
+                self.state = 144
                 localctx._attr_arg_def = self.attr_arg_def()
                 localctx.var_attr_arg_defs.append(localctx._attr_arg_def)
-                self.state = 138
+                self.state = 149
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,19,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,21,self._ctx)
                 while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                     if _alt==1:
-                        self.state = 134
+                        self.state = 145
                         self.match(BoltunParser.COMMA)
-                        self.state = 135
+                        self.state = 146
                         localctx._attr_arg_def = self.attr_arg_def()
                         localctx.var_attr_arg_defs.append(localctx._attr_arg_def) 
-                    self.state = 140
+                    self.state = 151
                     self._errHandler.sync(self)
-                    _alt = self._interp.adaptivePredict(self._input,19,self._ctx)
+                    _alt = self._interp.adaptivePredict(self._input,21,self._ctx)
 
-                self.state = 145
+                self.state = 156
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==BoltunParser.COMMA:
-                    self.state = 141
+                    self.state = 152
                     self.match(BoltunParser.COMMA)
-                    self.state = 142
+                    self.state = 153
                     localctx._attr_kw_arg_def = self.attr_kw_arg_def()
                     localctx.var_attr_kw_arg_defs.append(localctx._attr_kw_arg_def)
-                    self.state = 147
+                    self.state = 158
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
@@ -1187,7 +1231,7 @@ class BoltunParser ( Parser ):
             else:
                 raise NoViableAltException(self)
 
-            self.state = 150
+            self.state = 161
             self.match(BoltunParser.R_PAREN)
 
 
@@ -1249,7 +1293,7 @@ class BoltunParser ( Parser ):
         self.enterRule(localctx, 22, self.RULE_attr_arg_def)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 153
+            self.state = 164
             localctx.var_value = self.attr_value()
 
 
@@ -1311,11 +1355,11 @@ class BoltunParser ( Parser ):
         self.enterRule(localctx, 24, self.RULE_attr_kw_arg_def)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 156
+            self.state = 167
             localctx.var_name = self.match(BoltunParser.NAME)
-            self.state = 157
+            self.state = 168
             self.match(BoltunParser.EQUAL)
-            self.state = 158
+            self.state = 169
             localctx.var_value = self.attr_value()
 
 
@@ -1377,7 +1421,7 @@ class BoltunParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 161
+            self.state = 172
             localctx.var_content = self._input.LT(1)
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << BoltunParser.BOOL) | (1 << BoltunParser.NUMBER) | (1 << BoltunParser.STRING))) != 0)):
@@ -1447,21 +1491,21 @@ class BoltunParser ( Parser ):
         self.enterRule(localctx, 28, self.RULE_comment_tag)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 164
+            self.state = 175
             self.match(BoltunParser.LL_COMMENT_BRACK)
-            self.state = 168
+            self.state = 179
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,22,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,24,self._ctx)
             while _alt!=1 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1+1:
-                    self.state = 165
+                    self.state = 176
                     localctx._COMMENT_DATA = self.match(BoltunParser.COMMENT_DATA)
                     localctx.var_chars.append(localctx._COMMENT_DATA) 
-                self.state = 170
+                self.state = 181
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,22,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,24,self._ctx)
 
-            self.state = 171
+            self.state = 182
             self.match(BoltunParser.RR_COMMENT_BRACK)
 
 

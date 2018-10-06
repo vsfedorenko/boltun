@@ -149,6 +149,7 @@ entity_tag
     LL_BRACK
     var_type=entity_type
     name=NAME
+    (HASH var_ref_names+=NAME (HASH var_ref_names+=NAME)*)?
     var_optional=QUESTION?
     var_fltrs+=fltr*?
     RR_BRACK
@@ -165,7 +166,8 @@ elif entity_type == '@':
 
 name=$name.text
 optional=$var_optional is not None
-node = node_class(name, optional)
+ref_names=[v.text for v in $ctx.var_ref_names]
+node = node_class(name, ref_names, optional)
 
 for fltr in $var_fltrs:
     name = fltr.__data__.get('name')
@@ -416,11 +418,21 @@ PIPE        : {self.state['tag']}? '|' ;
 WS	         : {self.state['tag'] and not self.state['comment']}?
                ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+
                -> channel(HIDDEN) ;
-NAME         : {self.state['tag'] and not self.state['comment']}? ('a'..'z' | 'A'..'Z' | '_' | '-')+ ;
+NAME         :
+    {self.state['tag'] and not self.state['comment']}?
+    NAME_LETTERS+
+    ( NAME_LETTERS
+    | NAME_NUMBERS
+    )*
+    ;
+fragment NAME_LETTERS : 'a'..'z' | 'A'..'Z' | '_' | '-';
+fragment NAME_NUMBERS : '0'..'9';
+
 DATA         : {not self.state['tag']}? . ;
 
 SLASH    : {self.state['tag']}? '/' ;
 AMP	     : {self.state['tag']}? '&' ;
+HASH	 : {self.state['tag']}? '#' ;
 GREATER  : {self.state['tag']}? '>' ;
 HAT	     : {self.state['tag']}? '^' ;
 EQUAL    : {self.state['tag']}? '=' ;
