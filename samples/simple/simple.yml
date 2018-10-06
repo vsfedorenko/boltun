@@ -1,0 +1,4 @@
+entities:
+  intents: <% include("intents/*.yml") %>
+  aliases: <% include("aliases/*.yml") %>
+  slots: <% include("slots/*.yml") %>

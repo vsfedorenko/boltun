@@ -2,19 +2,46 @@ from os.path import dirname, join
 
 from setuptools import find_packages, setup
 
-setup(
-    name="boltun",
-    version="1.0.0",
-    description="NLU datasets generator",
-    author="meiblorn",
-    license="MIT",
-    url="https://github.com/meiblorn/boltun",
-    packages=find_packages(),
-    long_description=open(join(dirname(__file__), "README.md")).read(),
-    long_description_content_type="text/markdown",
-    classifiers=[
-        "Programming Language :: Python :: 2.7",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ]
-)
+
+def setup_package():
+    setup(
+        name="boltun",
+        packages=find_packages('src'),
+        package_dir={'': 'src'},
+
+        use_scm_version={
+            'version_scheme': 'guess-next-dev',
+            'write_to': 'src/boltun/__version__.py',
+        },
+
+        python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+
+        setup_requires=[
+            'pytest-runner', 'setuptools_scm', 'setuptools_scm_git_archive'
+        ],
+
+        tests_require=['pytest'],
+        test_suite='tests',
+
+        version="1.0.0",
+        author="meiblorn",
+        license="MIT",
+        url="https://github.com/meiblorn/boltun",
+        description="NLU datasets generator",
+        long_description=open(join(dirname(__file__), "readme.md")).read(),
+        long_description_content_type="text/markdown",
+
+
+        scripts=['bin/boltun'],
+        classifiers=[
+            'Programming Language :: Python :: 2',
+            'Programming Language :: Python :: 2.7',
+            "License :: OSI Approved :: MIT License",
+            "Intended Audience :: Developers",
+            "Operating System :: OS Independent",
+        ]
+    )
+
+
+if __name__ == '__main__':
+    setup_package()

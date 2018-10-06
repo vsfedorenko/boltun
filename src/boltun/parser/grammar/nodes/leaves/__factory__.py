@@ -1,0 +1,2 @@
+class LeafNodeFactory(object):
+    pass

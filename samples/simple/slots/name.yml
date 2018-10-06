@@ -1,0 +1,10 @@
+- name: 'name'
+  utterances:
+  - 'Jack'
+  - 'Victor'
+  - 'Vladimir'
+
+- name: 'time'
+  utterances:
+    - '2 p.m.'
+    - '14:00'

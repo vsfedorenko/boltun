@@ -1,0 +1,4 @@
+- name: 'hello'
+  utterances:
+  - <% include("utterances/short.yml") %>
+  - 'Hello, @[name]'

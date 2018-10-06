@@ -1,0 +1,4 @@
+- name: 'place'
+  utterances:
+  - <% include("utterances/earth.yaml") %>
+  - <% include("utterances/space.yaml") %>
