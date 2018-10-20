@@ -8,12 +8,13 @@ options {
 import ast
 import logging
 
-from boltun.engine.grammar import GrammarMode, RecognitionDisabledException
-from boltun.engine.template.node import Filter
-from boltun.engine.template.node.fork import ChoiceNode, ContentNode, RootNode
-from boltun.engine.template.node.leaf import AliasNode, CallNode, CommentNode, \
-    DataNode, IntentNode, SlotNode
+from boltun.engine.grammar import RecognitionDisabledException
 from boltun.util import Stack
+from .Antlr4GrammarMode import Antlr4GrammarMode
+from .node import NodeFilter
+from .node.fork import ChoiceNode, ContentNode, RootNode
+from .node.leaf import AliasNode, CallNode, CommentNode, DataNode, IntentNode, \
+    SlotNode
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ def recognition_mode(self):
     try:
         return self.__recognition_mode
     except AttributeError:
-        self.__recognition_mode = GrammarMode.NLP
+        self.__recognition_mode = Antlr4GrammarMode.NLP
         return self.__recognition_mode
 
 @recognition_mode.setter
@@ -183,7 +184,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(GrammarMode.DATA)
+self._validate_recognition_mode(Antlr4GrammarMode.DATA)
 
 }
 @after
@@ -219,7 +220,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(GrammarMode.NLP)
+self._validate_recognition_mode(Antlr4GrammarMode.NLP)
 
 choice_node = ChoiceNode()
 self.node_stack.push(choice_node)
@@ -254,7 +255,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(GrammarMode.NLP)
+self._validate_recognition_mode(Antlr4GrammarMode.NLP)
 
 node = ChoiceNode()
 
@@ -292,7 +293,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(GrammarMode.NLP)
+self._validate_recognition_mode(Antlr4GrammarMode.NLP)
 
 }
 @after
@@ -315,7 +316,7 @@ self.node_stack.peek().add_child(node)
         )*
     )?
     var_optional=QUESTION?
-    var_fltrs+=fltr*?
+    (PIPE var_fltr_chain=fltr_chain)?
     RR_BRACK
 {
 
@@ -334,16 +335,9 @@ optional=$var_optional is not None
 ref_names=[v.text for v in $ctx.var_ref_names]
 
 node = node_class(name, ref_names, optional)
-
-
-for fltr_def in $var_fltrs:
-    name = fltr_def.__data__.get('name')
-    optional = fltr_def.__data__.get('optional')
-    args = fltr_def.__data__.get('args')
-    kwargs = fltr_def.__data__.get('kwargs')
-
-    filter_ = Filter(name=name, optional=optional, args=args, kwargs=kwargs)
-    node.add_filter(filter_)
+if $ctx.var_fltr_chain:
+    filters = $ctx.var_fltr_chain.__data__.get('filters', None)
+    node.add_filters(filters)
 
 } ;
 
@@ -358,7 +352,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(GrammarMode.CALL)
+self._validate_recognition_mode(Antlr4GrammarMode.CALL)
 
 }
 @after
@@ -378,34 +372,29 @@ self.node_stack.peek().add_child(node)
     var_optional=QUESTION?
     var_attr=attr
     var_optional=QUESTION?
-    var_fltrs+=fltr*
+    (PIPE var_fltr_chain=fltr_chain)?
     RR_BRACK
 {
 
 name=$var_name.text
 optional=$var_optional is not None
 method=$var_method_name.text
-args = $ctx.var_attr.__data__.get('args', None)
-kwargs = $ctx.var_attr.__data__.get('kwargs', None)
+arg_params = $ctx.var_attr.__data__.get('arg_params', None)
+kwarg_params = $ctx.var_attr.__data__.get('kwarg_params', None)
 
 node = CallNode(name=name, optional=optional,
-                method=method, args=args, kwargs=kwargs)
+                method=method, arg_params=arg_params, kwarg_params=kwarg_params)
 
-for fltr_def in $var_fltrs:
-    name = fltr_def.__data__.get('name')
-    optional = fltr_def.__data__.get('optional')
-    args = fltr_def.__data__.get('args')
-    kwargs = fltr_def.__data__.get('kwargs')
-
-    filter_ = Filter(name=name, optional=optional, args=args, kwargs=kwargs)
-    node.add_filter(filter_)
+if $ctx.var_fltr_chain:
+    filters = $ctx.var_fltr_chain.__data__.get('filters', None)
+    node.add_filters(filters)
 
 } ;
 
 // ================================== FILTER ==================================
 
 fltr
-locals []
+locals [__data__=dict()]
 @init
 {
 
@@ -415,7 +404,6 @@ locals []
 
 }
     :
-    PIPE
     var_name=NAME
     var_optional=QUESTION?
     var_attr=attr?
@@ -425,8 +413,43 @@ locals []
 $ctx.__data__ = {
     'name' : $ctx.var_name.text,
     'optional': $var_optional is not None,
-    'args' : $ctx.var_attr.__data__.get('args') if $ctx.var_attr else [],
-    'kwargs' : $ctx.var_attr.__data__.get('kwargs') if $ctx.var_attr else {}
+    'arg_params' : $ctx.var_attr.__data__.get('arg_params') if $ctx.var_attr else [],
+    'kwarg_params' : $ctx.var_attr.__data__.get('kwarg_params') if $ctx.var_attr else {}
+}
+
+} ;
+
+// =============================== FILTER CHAIN ===============================
+
+fltr_chain
+locals [__data__=dict()]
+@init
+{
+
+}
+@after
+{
+
+}
+    :
+    var_fltrs+=fltr
+    (PIPE var_fltrs+=fltr)*
+{
+
+filters = []
+
+for fltr_def in $var_fltrs:
+    name = fltr_def.__data__.get('name')
+    optional = fltr_def.__data__.get('optional')
+    arg_params = fltr_def.__data__.get('arg_params')
+    kwarg_params = fltr_def.__data__.get('kwarg_params')
+
+    filter_ = NodeFilter(name=name, optional=optional,
+                         arg_params=arg_params, kwarg_params=kwarg_params)
+    filters.append(filter_)
+
+$ctx.__data__ = {
+    'filters' : filters,
 }
 
 } ;
@@ -457,10 +480,10 @@ locals [__data__=dict()]
 {
 
 $ctx.__data__ = {
-    'args' : [
+    'arg_params' : [
         v.__data__.get('value') for v in $ctx.var_attr_arg_defs
     ],
-    'kwargs' : {
+    'kwarg_params' : {
         v.__data__.get('name'): v.__data__.get('value')
         for v in $ctx.var_attr_kw_arg_defs
     }
@@ -544,7 +567,7 @@ locals [__data__=dict()]
 @init
 {
 
-self._validate_recognition_mode(GrammarMode.DATA)
+self._validate_recognition_mode(Antlr4GrammarMode.DATA)
 
 }
 @after

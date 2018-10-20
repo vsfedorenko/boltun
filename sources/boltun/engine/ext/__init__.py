@@ -11,37 +11,51 @@ LOGGER = logging.getLogger(__name__)
 
 @attr.s
 class Extension(with_metaclass(ABCMeta, object)):
-    functions = attr.ib(type=dict, default=attr.Factory(dict))
-    filters = attr.ib(type=dict, default=attr.Factory(dict))
 
-    def add_function(self, names, callable_or_function):
-        if not isinstance(names, (list,)):
-            names = [names]
+    def functions(self):
+        return []
 
-        if not callable(callable_or_function) and not \
-                isinstance(callable_or_function, (Function,)):
-            raise Exception("Expecting callable or Function instance. "
-                            "Got: %s" % type(callable_or_function))
+    def filters(self):
+        return []
 
-        for name in names:
-            if name in self.functions.keys():
-                LOGGER.warn("Overriding existing "
-                            "function declaration: {name}", name=name)
 
-            self.functions[name] = callable_or_function
+@attr.s
+class ExtensionSet(object):
+    _engine = attr.ib()
+    _extensions = attr.ib(type=dict, default=attr.Factory(dict))
+    _functions = attr.ib(type=dict, default=attr.Factory(dict))
+    _filters = attr.ib(type=dict, default=attr.Factory(dict))
 
-    def add_filter(self, names, callable_or_filter):
-        if not isinstance(names, (list,)):
-            names = [names]
+    def append(self, extension, force_replace=False):
+        self._init_extension(extension)
 
-        if not callable(callable_or_filter) and not \
-                isinstance(callable_or_filter, (Filter,)):
-            raise Exception("Expecting callable or Filter instance. "
-                            "Got: %s" % type(callable_or_filter))
+    def extend(self, extensions, force_replace=False):
+        for extension in extensions:
+            self.append(extension, force_replace)
 
-        for name in names:
-            if name in self.functions.keys():
-                LOGGER.warn("Overriding existing "
-                            "function declaration: {name}", name=name)
+    def get_extension(self, type_):
+        return self._extensions[type_]
 
-            self.functions[name] = callable_or_filter
+    def get_extensions(self):
+        return dict(self._extensions)
+
+    def get_functions(self):
+        return dict(self._functions)
+
+    def get_filters(self):
+        return dict(self._filters)
+
+    def _init_extension(self, extension):
+        for function_ in extension.functions():
+            self._init_function(function_)
+
+        for filter_ in extension.filters():
+            self._init_function(filter_)
+
+        self._extensions[type(extension)] = extension
+
+    def _init_function(self, function_):
+        pass
+
+    def _init_filter(self, filter_):
+        pass

@@ -1,7 +1,7 @@
-*
-!.gitignore
-!__init__.py
-!Antlr4Grammar.g4
-!Antlr4Grammar.py
-!Antlr4GrammarErrorStrategy.py
-!../Antlr4GrammarExceptions.py
+Antlr4Grammar.tokens
+Antlr4GrammarMode.py
+Antlr4GrammarLexer.py
+Antlr4GrammarLexer.tokens
+Antlr4GrammarParser.py
+Antlr4GrammarListener.py
+Antlr4GrammarVisitor.py

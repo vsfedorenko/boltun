@@ -5,18 +5,16 @@ import itertools
 import attr
 import six
 
-from ._base import Call, Const, Entity
+from boltun.engine import Engine
+from boltun.engine.template import Compiler
+from .nodes import Call, Const, Entity
 
 
 @attr.s
-class Compiler(object):
-    intents = attr.ib(type=list, default=attr.Factory(list))
-    aliases = attr.ib(type=list, default=attr.Factory(list))
-    slots = attr.ib(type=list, default=attr.Factory(list))
-    functions = attr.ib(type=dict, default=attr.Factory(dict))
-    filters = attr.ib(type=dict, default=attr.Factory(dict))
+class GraphCompiler(Compiler):
+    _engine = attr.ib(type=Engine)
 
-    def process(self, node):
+    def __process__(self, input_):
         return node.__compile__(self)
 
     @staticmethod
@@ -32,14 +30,14 @@ class Compiler(object):
 
     @staticmethod
     def function(name, method, args, kwargs):
-        args = Compiler._args(args)
-        kwargs = Compiler._kwargs(kwargs)
+        args = GraphCompiler._args(args)
+        kwargs = GraphCompiler._kwargs(kwargs)
         return Call(name, method, args, kwargs)
 
     @staticmethod
     def filter(name, value, args, kwargs):
         args_w_value = [value]
-        args_w_value.extend(Compiler._args(args))
+        args_w_value.extend(GraphCompiler._args(args))
         return Call(name, args_w_value, kwargs)
 
     @staticmethod

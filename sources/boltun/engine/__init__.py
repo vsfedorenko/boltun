@@ -1,21 +1,22 @@
 import attr
-import six
 
+from boltun.engine.ext import ExtensionSet
+from boltun.engine.ext.core import CoreExtension
 from boltun.engine.grammar import Grammar
-from boltun.engine.template import Template
-from boltun.engine.template.compiler import Compiler
+from boltun.engine.grammar.antlr4 import Antlr4Grammar
+from boltun.engine.template import Compiler, Template
 
 
 @attr.s
 class Engine(object):
     grammar = attr.ib(type=Grammar)
+    compiler = attr.ib(type=Compiler)
+    extensions = attr.ib(type=ExtensionSet,
+                         default=attr.Factory(ExtensionSet, takes_self=True))
     cache = attr.ib(default=None)
-    charset = attr.ib(type=six.string_types, default='utf-8')
-    debug = attr.ib(type=bool, default=False, init=False)
-    compiler = attr.ib(default=attr.Factory(Compiler))
 
     def __attrs_post_init__(self):
-        pass
+        self.extensions.append(CoreExtension(), force_replace=True)
 
     def create_template(self, input_str):
         grammar_parse_result = self.grammar.parse(input_str)
@@ -24,3 +25,6 @@ class Engine(object):
         self.compiler.process(node_tree)
 
         return Template()
+
+    def get_extensions(self):
+        return set(self.extensions)

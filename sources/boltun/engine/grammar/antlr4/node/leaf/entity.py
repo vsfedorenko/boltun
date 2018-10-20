@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod as abstract_method
 import attr
 from six import with_metaclass
 
-from boltun.engine.template.node import Filter
+from boltun.engine.grammar.antlr4.node import NodeFilter
 from .base import LeafNode
 
 
@@ -17,14 +17,17 @@ class EntityNode(with_metaclass(ABCMeta, LeafNode)):
     filters = attr.ib(type=list, default=attr.Factory(list))
 
     def add_filter(self, filter_):
-        # type: (Filter) -> None
+        # type: (NodeFilter) -> None
         self.filters.append(filter_)
+
+    def add_filters(self, filters):
+        self.filters.extend(filters)
 
     def __compile__(self, compiler):
         compiled_values = [self.__entity__(compiler)]
 
         compiled_values = \
-            Filter.compile_sequence(compiler, self.filters, compiled_values)
+            NodeFilter.compile_sequence(compiler, self.filters, compiled_values)
 
         if self.optional:
             compiled_values.append(None)

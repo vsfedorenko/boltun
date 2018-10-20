@@ -5,7 +5,7 @@ from abc import ABCMeta
 import attr
 from six import with_metaclass
 
-from ..__base__ import Node
+from boltun.engine.grammar.antlr4.node import Node
 
 
 @attr.s

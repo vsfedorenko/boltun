@@ -1,11 +1,19 @@
 import attr
 from antlr4 import CommonTokenStream, InputStream
 
+from boltun.engine import Grammar
+from boltun.engine.grammar import Result
+from boltun.engine.grammar.antlr4.node import Node
 from .Antlr4GrammarErrorStrategy import Antlr4GrammarErrorStrategy
 from .Antlr4GrammarLexer import Antlr4GrammarLexer
+from .Antlr4GrammarMode import Antlr4GrammarMode
 from .Antlr4GrammarParser import Antlr4GrammarParser
 from .Antlr4GrammarVisitor import Antlr4GrammarVisitor
-from ..base import Grammar, GrammarMode, GrammarParseResult
+
+
+@attr.s
+class Antlr4GrammarResult(Result):
+    grammar_tree = attr.ib(type=Node)
 
 
 @attr.s
@@ -13,7 +21,7 @@ class Antlr4Grammar(Grammar):
     error_strategy = attr.ib(default=attr.Factory(Antlr4GrammarErrorStrategy))
     visitor = attr.ib(default=attr.Factory(Antlr4GrammarVisitor))
     listeners = attr.ib(type=list, default=attr.Factory(list))
-    mode = attr.ib(type=GrammarMode, default=GrammarMode.NLP)
+    mode = attr.ib(type=Antlr4GrammarMode, default=Antlr4GrammarMode.NLP)
 
     def parse(self, input_str, mode=None, **kwargs):
         """
@@ -42,7 +50,7 @@ class Antlr4Grammar(Grammar):
 
         self.visitor.visit(grammar_tree)
 
-        return GrammarParseResult(grammar_tree, node_tree)
+        return Antlr4GrammarResult(node_tree, grammar_tree)
 
 
-__all__ = ['Antlr4Grammar']
+__all__ = ['Antlr4GrammarResult', 'Antlr4Grammar']

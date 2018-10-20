@@ -5,6 +5,9 @@ from boltun.engine.ext import Function
 
 class EnvFunction(Function):
 
+    def __names__(self):
+        return ['env', 'environ', 'environment']
+
     def __execute__(self, *args, **kwargs):
         pass
 

@@ -4,7 +4,6 @@ import unittest
 
 import yaml
 
-from boltun.engine import Compiler
 from boltun.engine.grammar.antlr4 import Antlr4Grammar
 
 logging.config.dictConfig(yaml.load(open('logging.dev.yaml', 'r')))
@@ -35,10 +34,7 @@ class MyTestCase(unittest.TestCase):
         grammar = Antlr4Grammar()
         process_result = grammar.parse(input_str)
 
-        compiler = Compiler()
-
         node_tree = process_result.node_tree
-        process_result = compiler.process(node_tree)
 
         print(process_result)
         json_dump = json.dumps(

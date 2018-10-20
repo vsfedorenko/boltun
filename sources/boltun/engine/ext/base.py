@@ -8,6 +8,11 @@ from six import with_metaclass
 
 @attr.s
 class Filter(with_metaclass(ABCMeta, object)):
+    _engine = attr.ib()
+
+    @abstract_method
+    def __names__(self):
+        raise NotImplementedError()
 
     @abstract_method
     def __apply__(self, input_, *args, **kwargs):
@@ -16,6 +21,11 @@ class Filter(with_metaclass(ABCMeta, object)):
 
 @attr.s
 class Function(with_metaclass(ABCMeta, object)):
+    _engine = attr.ib()
+
+    @abstract_method
+    def __names__(self):
+        raise NotImplementedError()
 
     @abstract_method
     def __execute__(self, *args, **kwargs):
