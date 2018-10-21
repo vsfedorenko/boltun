@@ -1,6 +1,6 @@
 import attr
 
-from boltun.engine.ext import Extension
+from boltun.engine.environment.extensions import Extension
 
 
 @attr.s

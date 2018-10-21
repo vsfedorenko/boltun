@@ -1,15 +1,13 @@
 from __future__ import absolute_import
 
-from boltun.engine.ext import Function
+from boltun.engine.environment.extensions import Function
 
 
 class IncludeFunction(Function):
 
-    def __names__(self):
+    @classmethod
+    def __names__(cls):
         return ['include']
 
     def __execute__(self, *args, **kwargs):
         pass
-
-
-__all__ = ['IncludeFunction']

@@ -11,7 +11,7 @@ from boltun.engine.grammar.antlr4.node import Node
 @attr.s
 class LeafNode(with_metaclass(ABCMeta, Node)):
 
-    def __compile__(self, compiler):
+    def __compile__(self, compiler, environment):
         pass
 
 

@@ -11,18 +11,11 @@ from .nodes import Node
 
 @attr.s
 class Result(object):
-    """
-
-    """
-
     node_tree = attr.ib(type=Node)
 
 
 @attr.s
 class Grammar(with_metaclass(ABCMeta, object)):
-    """
-
-    """
 
     @abstract_method
     def parse(self, input_):

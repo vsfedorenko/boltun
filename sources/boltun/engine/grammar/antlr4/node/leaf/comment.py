@@ -9,8 +9,8 @@ from .base import LeafNode
 class CommentNode(LeafNode):
     content = attr.ib(type=str)
 
-    def __compile__(self, compiler):
-        return compiler.nothing()
+    def __compile__(self, compiler, environment):
+        return compiler.nothing(environment)
 
 
 __all__ = ['CommentNode']

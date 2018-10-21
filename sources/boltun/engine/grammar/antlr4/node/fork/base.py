@@ -15,8 +15,11 @@ class ForkNode(with_metaclass(ABCMeta, Node)):
     def add_child(self, node):
         self.children.append(node)
 
-    def __compile__(self, compiler):
-        return [compiler.process(child) for child in self.children]
+    def __compile__(self, compiler, environment):
+        return [
+            child.__compile__(compiler, environment)
+            for child in self.children
+        ]
 
 
 __all__ = ['ForkNode']

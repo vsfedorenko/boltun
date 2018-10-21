@@ -23,11 +23,12 @@ class EntityNode(with_metaclass(ABCMeta, LeafNode)):
     def add_filters(self, filters):
         self.filters.extend(filters)
 
-    def __compile__(self, compiler):
-        compiled_values = [self.__entity__(compiler)]
+    def __compile__(self, compiler, environment):
+        compiled_values = [self.__entity__(compiler, environment)]
 
         compiled_values = \
-            NodeFilter.compile_sequence(compiler, self.filters, compiled_values)
+            NodeFilter.compile_sequence(compiler, environment, self.filters,
+                                        compiled_values)
 
         if self.optional:
             compiled_values.append(None)
@@ -38,29 +39,30 @@ class EntityNode(with_metaclass(ABCMeta, LeafNode)):
         return compiled_values
 
     @abstract_method
-    def __entity__(self, compiler):
+    def __entity__(self, compiler, environment):
         raise NotImplementedError()
 
 
 @attr.s
 class IntentNode(EntityNode):
 
-    def __entity__(self, compiler):
-        return compiler.entity('intent', self.name, self.ref_names)
+    def __entity__(self, compiler, environment):
+        return compiler.entity(environment, 'intent', self.name,
+                               self.ref_names)
 
 
 @attr.s
 class AliasNode(EntityNode):
 
-    def __entity__(self, compiler):
-        return compiler.entity('alias', self.name, self.ref_names)
+    def __entity__(self, compiler, environment):
+        return compiler.entity(environment, 'alias', self.name, self.ref_names)
 
 
 @attr.s
 class SlotNode(EntityNode):
 
-    def __entity__(self, compiler):
-        return compiler.entity('slot', self.name, self.ref_names)
+    def __entity__(self, compiler, environment):
+        return compiler.entity(environment, 'slot', self.name, self.ref_names)
 
 
 __all__ = ['EntityNode', 'IntentNode', 'AliasNode', 'SlotNode']

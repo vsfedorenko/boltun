@@ -18,15 +18,15 @@ class Const(Node):
 
 
 @attr.s
+class Call(Node):
+    callable = attr.ib(type=callable)
+
+    def __call__(self, *args, **kwargs):
+        return self.callable(*args, **kwargs)
+
+
+@attr.s
 class Entity(Node):
     type = attr.ib()
     name = attr.ib(type=six.string_types)
     ref_names = attr.ib(type=list, default=attr.Factory(list))
-
-
-@attr.s
-class Call(Node):
-    function = attr.ib(type=callable)
-    method = attr.ib(type=six.string_types, default=None)
-    args = attr.ib(type=list, default=attr.Factory(list))
-    kwargs = attr.ib(type=dict, default=attr.Factory(dict))

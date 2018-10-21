@@ -1,8 +1,7 @@
 import attr
 from antlr4 import CommonTokenStream, InputStream
 
-from boltun.engine import Grammar
-from boltun.engine.grammar import Result
+from boltun.engine.grammar import Grammar, Result
 from boltun.engine.grammar.antlr4.node import Node
 from .Antlr4GrammarErrorStrategy import Antlr4GrammarErrorStrategy
 from .Antlr4GrammarLexer import Antlr4GrammarLexer
@@ -50,7 +49,8 @@ class Antlr4Grammar(Grammar):
 
         self.visitor.visit(grammar_tree)
 
-        return Antlr4GrammarResult(node_tree, grammar_tree)
+        return Antlr4GrammarResult(node_tree=node_tree,
+                                   grammar_tree=grammar_tree)
 
 
 __all__ = ['Antlr4GrammarResult', 'Antlr4Grammar']

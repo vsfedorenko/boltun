@@ -6,30 +6,22 @@ import attr
 from six import with_metaclass
 
 
-@attr.s
-class Filter(with_metaclass(ABCMeta, object)):
-    _engine = attr.ib()
+def boltun_function(cls_or_func):
+    def _decorator(names):
+        cls_or_func.__boltun_names__ = names
 
-    @abstract_method
-    def __names__(self):
-        raise NotImplementedError()
-
-    @abstract_method
-    def __apply__(self, input_, *args, **kwargs):
-        raise NotImplementedError()
+    return _decorator
 
 
 @attr.s
 class Function(with_metaclass(ABCMeta, object)):
-    _engine = attr.ib()
+    _environment = attr.ib()
 
+    @classmethod
     @abstract_method
-    def __names__(self):
+    def __names__(cls):
         raise NotImplementedError()
 
     @abstract_method
     def __execute__(self, *args, **kwargs):
         raise NotImplementedError()
-
-
-__all__ = ['Filter', 'Function']

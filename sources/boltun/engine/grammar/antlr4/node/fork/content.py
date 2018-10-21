@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import attr
 
-from .__base__ import ForkNode
+from .base import ForkNode
 
 
 @attr.s
