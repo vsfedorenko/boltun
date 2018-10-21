@@ -12,7 +12,8 @@ class MyTestCase(unittest.TestCase):
         compiler = ObjectGraphCompiler()
         engine = Engine(grammar, compiler)
         engine.render("Hello, [[> env('PATH') | upper | lower | upper ]] "
-                      "[[> range(0, 10) | to_str | split(',') ]]")
+                      "[[> range(0, 10) | to_str | split(',') ]]"
+                      "[[> any('test', 'fest') ]]")
 
 
 if __name__ == '__main__':
