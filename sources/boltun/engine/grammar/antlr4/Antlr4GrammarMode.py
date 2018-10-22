@@ -6,4 +6,3 @@ from enum import IntEnum
 class Antlr4GrammarMode(IntEnum):
     DATA = 1
     CALL = 2
-    NLP = 3

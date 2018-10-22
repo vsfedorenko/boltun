@@ -41,10 +41,6 @@ class Compiler(with_metaclass(ABCMeta, object)):
         raise NotImplementedError()
 
     @abstract_method
-    def entity(self, environment, type_, name, ref_names):
-        raise NotImplementedError()
-
-    @abstract_method
     def function(self, environment, function_context):
         raise NotImplementedError()
 

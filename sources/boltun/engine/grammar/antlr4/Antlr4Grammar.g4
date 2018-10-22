@@ -13,8 +13,7 @@ from boltun.util import Stack
 from .Antlr4GrammarMode import Antlr4GrammarMode
 from .node import NodeFilter
 from .node.fork import ChoiceNode, ContentNode, RootNode
-from .node.leaf import AliasNode, CallNode, CommentNode, DataNode, IntentNode, \
-    SlotNode
+from .node.leaf import CallNode, CommentNode, DataNode
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,7 @@ def recognition_mode(self):
     try:
         return self.__recognition_mode
     except AttributeError:
-        self.__recognition_mode = Antlr4GrammarMode.NLP
+        self.__recognition_mode = Antlr4GrammarMode.CALL
         return self.__recognition_mode
 
 @recognition_mode.setter
@@ -211,7 +210,7 @@ polyadic_tag : choice_tag | choice_short_tag;
 
 // ================================= UNARY TAG ================================
 
-unary_tag : entity_tag | call_tag | comment_tag ;
+unary_tag : call_tag | comment_tag ;
 
 // ================================ CHOICE TAG ================================
 
@@ -220,7 +219,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(Antlr4GrammarMode.NLP)
+self._validate_recognition_mode(Antlr4GrammarMode.CALL)
 
 choice_node = ChoiceNode()
 self.node_stack.push(choice_node)
@@ -255,7 +254,7 @@ locals []
 @init
 {
 
-self._validate_recognition_mode(Antlr4GrammarMode.NLP)
+self._validate_recognition_mode(Antlr4GrammarMode.CALL)
 
 node = ChoiceNode()
 
@@ -286,64 +285,6 @@ for c in $var_chars:
 
 }
 ;
-// ================================ ENTITY TAG ================================
-
-entity_tag
-locals []
-@init
-{
-
-self._validate_recognition_mode(Antlr4GrammarMode.NLP)
-
-}
-@after
-{
-
-node.start = self._get_start_pos($ctx)
-node.stop = self._get_stop_pos($ctx)
-self.node_stack.peek().add_child(node)
-
-}
-    :
-    LL_BRACK
-    var_type=entity_type
-    var_optional=QUESTION?
-    name=NAME
-    (
-        HASH var_ref_names+=NAME
-        (
-            HASH var_ref_names+=NAME
-        )*
-    )?
-    var_optional=QUESTION?
-    (PIPE var_fltr_chain=fltr_chain)?
-    RR_BRACK
-{
-
-node_class = None
-
-entity_type = $var_type.text
-if entity_type == '%':
-    node_class = IntentNode
-elif entity_type == '~':
-    node_class = AliasNode
-elif entity_type == '@':
-    node_class = SlotNode
-
-name=$name.text
-optional=$var_optional is not None
-ref_names=[v.text for v in $ctx.var_ref_names]
-
-node = node_class(name, ref_names, optional)
-if $ctx.var_fltr_chain:
-    filters = $ctx.var_fltr_chain.__data__.get('filters', None)
-    node.add_filters(filters)
-
-} ;
-
-// ================================ ENTITY TYPE ===============================
-
-entity_type : ENTITY_TYPE ;
 
 // ================================= CALL TAG =================================
 

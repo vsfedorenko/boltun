@@ -18,9 +18,6 @@ class ObjectGraphCompiler(Compiler):
         compiled_obj_graph = self.__process__(grammar_node_tree, environment)
         return ObjectGraphTemplate(compiled_obj_graph, environment)
 
-    def entity(self, environment, type_, name, ref_names):
-        return Entity(type_, name, ref_names)
-
     def function(self, environment, function_context):
         function_name = function_context.name
         function_method = function_context.method

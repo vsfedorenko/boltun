@@ -20,7 +20,7 @@ class Antlr4Grammar(Grammar):
     error_strategy = attr.ib(default=attr.Factory(Antlr4GrammarErrorStrategy))
     visitor = attr.ib(default=attr.Factory(Antlr4GrammarVisitor))
     listeners = attr.ib(type=list, default=attr.Factory(list))
-    mode = attr.ib(type=Antlr4GrammarMode, default=Antlr4GrammarMode.NLP)
+    mode = attr.ib(type=Antlr4GrammarMode, default=Antlr4GrammarMode.CALL)
 
     def parse(self, input_str, mode=None, **kwargs):
         """

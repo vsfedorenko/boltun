@@ -6,9 +6,6 @@ import attr
 @attr.s
 class LeafNodeFactory(object):
 
-    def create_entity_node(self):
-        pass
-
     def create_call_node(self):
         pass
 
