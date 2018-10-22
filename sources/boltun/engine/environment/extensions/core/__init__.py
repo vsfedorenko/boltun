@@ -1,8 +1,8 @@
 import attr
 
 from boltun.engine.environment.extensions import Extension
-from boltun.engine.environment.extensions.core.filter import LowerFilter, \
-    SplitFilter, ToStringFilter, UpperFilter
+from boltun.engine.environment.extensions.core.filter import JsonFilter, \
+    LowerFilter, SplitFilter, ToStringFilter, UpperFilter, YamlFilter
 from boltun.engine.environment.extensions.core.function import AnyFunction, \
     EchoFunction, EnvironmentFunction, IncludeFunction, RangeFunction
 
@@ -21,8 +21,10 @@ class CoreExtension(Extension):
 
     def filters(self):
         return [
+            JsonFilter,
             LowerFilter,
             SplitFilter,
             ToStringFilter,
             UpperFilter,
+            YamlFilter
         ]

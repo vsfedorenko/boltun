@@ -38,10 +38,11 @@ class ObjectGraphCompiler(Compiler):
     def filter(self, environment, filter_context):
         filter_name = filter_context.name
         filter_value = filter_context.value
+        filter_method = filter_context.method
         filter_args = filter_context.arg_params
         filter_kwargs = filter_context.kwarg_params
 
-        filter_callable = environment.filters.get(filter_name)
+        filter_callable = environment.filters.get(filter_name, filter_method)
 
         def defer_filter_callable():
             return filter_callable(filter_value(), *filter_args,

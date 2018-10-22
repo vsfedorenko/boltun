@@ -405,13 +405,15 @@ locals [__data__=dict()]
 }
     :
     var_name=NAME
+    (DOT var_method_name=NAME)?
     var_optional=QUESTION?
     var_attr=attr?
     var_optional=QUESTION?
 {
 
 $ctx.__data__ = {
-    'name' : $ctx.var_name.text,
+    'name' : $var_name.text,
+    'method': $var_method_name.text,
     'optional': $var_optional is not None,
     'arg_params' : $ctx.var_attr.__data__.get('arg_params') if $ctx.var_attr else [],
     'kwarg_params' : $ctx.var_attr.__data__.get('kwarg_params') if $ctx.var_attr else {}
@@ -441,10 +443,11 @@ filters = []
 for fltr_def in $var_fltrs:
     name = fltr_def.__data__.get('name')
     optional = fltr_def.__data__.get('optional')
+    method = fltr_def.__data__.get('method')
     arg_params = fltr_def.__data__.get('arg_params')
     kwarg_params = fltr_def.__data__.get('kwarg_params')
 
-    filter_ = NodeFilter(name=name, optional=optional,
+    filter_ = NodeFilter(name=name, method=method, optional=optional,
                          arg_params=arg_params, kwarg_params=kwarg_params)
     filters.append(filter_)
 

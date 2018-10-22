@@ -1,7 +1,6 @@
 import attr
 
-from .filter_holder import FilterHolder
-from .function_holder import FunctionHolder
+from .callable_holders import (FilterHolder, FunctionHolder)
 from .variable_holder import VariableHolder
 
 

@@ -1,13 +1,11 @@
-from __future__ import absolute_import
-
 from boltun.engine.environment.extensions import Filter
 
 
-class ToStringFilter(Filter):
+class YamlFilter(Filter):
 
     @classmethod
     def __names__(cls):
-        return ['str', 'to_str', 'to_string']
+        return ['yaml']
 
     def __apply__(self, input_, *args, **kwargs):
-        return str(input_)
+        pass

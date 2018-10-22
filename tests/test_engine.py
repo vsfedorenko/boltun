@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         engine = Engine(grammar, compiler)
         engine.render("Hello, [[> env('PATH') | upper | lower | upper ]] "
                       "[[> range(0, 10) | to_str | split(',') ]]"
-                      "[[> any('test', 'fest') ]]")
+                      "[[> any('test', 'fest') | json.dump ]]")
 
 
 if __name__ == '__main__':

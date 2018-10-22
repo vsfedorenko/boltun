@@ -3,6 +3,7 @@ from __future__ import absolute_import
 from abc import abstractmethod as abstract_method
 
 import attr
+import six
 
 from boltun.engine.grammar.nodes import Node as BaseNode, \
     NodeFilter as BaseFilter
@@ -21,6 +22,7 @@ class Node(BaseNode):
 
 @attr.s
 class NodeFilter(BaseFilter):
+    method = attr.ib(type=six.string_types, default=None)
     optional = attr.ib(type=bool, default=False)
     arg_params = attr.ib(type=list, default=attr.Factory(list))
     kwarg_params = attr.ib(type=dict, default=attr.Factory(dict))
@@ -37,7 +39,9 @@ class NodeFilter(BaseFilter):
             compiler.filter(
                 environment,
                 FilterContext(
-                    self.name, value, self.arg_params, self.kwarg_params
+                    name=self.name, value=value, method=self.method,
+                    arg_params=self.arg_params,
+                    kwarg_params=self.kwarg_params
                 )
             )
 
