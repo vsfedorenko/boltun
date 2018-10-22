@@ -210,7 +210,7 @@ polyadic_tag : choice_tag | choice_short_tag;
 
 // ================================= UNARY TAG ================================
 
-unary_tag : call_tag | comment_tag ;
+unary_tag : data_filter_tag | call_tag | comment_tag ;
 
 // ================================ CHOICE TAG ================================
 
@@ -285,6 +285,43 @@ for c in $var_chars:
 
 }
 ;
+// ============================= DATA FILTER TAG ==============================
+
+data_filter_tag
+locals []
+@init
+{
+
+self._validate_recognition_mode(Antlr4GrammarMode.CALL)
+
+}
+@after
+{
+
+node.start = self._get_start_pos($ctx)
+node.stop = self._get_stop_pos($ctx)
+self.node_stack.peek().add_child(node)
+
+}
+    :
+    LL_TEXT_BRACK
+    var_optional=QUESTION?
+    var_data=STRING
+    var_optional=QUESTION?
+    (PIPE var_fltr_chain=fltr_chain)?
+    RR_TEXT_BRACK
+{
+
+data=ast.literal_eval($var_data.text)
+optional=$var_optional is not None
+
+node = DataNode(content=data, optional=optional)
+
+if $ctx.var_fltr_chain:
+    filters = $ctx.var_fltr_chain.__data__.get('filters', None)
+    node.add_filters(filters)
+
+} ;
 
 // ================================= CALL TAG =================================
 
@@ -305,8 +342,7 @@ self.node_stack.peek().add_child(node)
 
 }
     :
-    LL_BRACK
-    GREATER
+    LL_CALL_BRACK
     var_optional=QUESTION?
     var_name=NAME
     (DOT var_method_name=NAME)?
@@ -314,7 +350,7 @@ self.node_stack.peek().add_child(node)
     var_attr=attr
     var_optional=QUESTION?
     (PIPE var_fltr_chain=fltr_chain)?
-    RR_BRACK
+    RR_CALL_BRACK
 {
 
 name=$var_name.text
@@ -495,11 +531,66 @@ locals [__data__=dict()]
 
 }
     :
-    var_content=(BOOL | NUMBER | STRING)
+    (
+        var_single_content=attr_single_value
+        |
+        var_list_content=attr_list_value
+    )
+{
+
+content = None
+if $ctx.var_single_content:
+    content = $ctx.var_single_content.__data__.get('value')
+elif $ctx.var_list_content:
+    content = $ctx.var_list_content.__data__.get('values')
+
+$ctx.__data__ = {
+    'content': content
+}
+
+} ;
+
+
+attr_single_value
+locals [__data__=dict()]
+@init
+{
+
+}
+@after
+{
+
+}
+    : var_value=(BOOL | NUMBER | STRING)
 {
 
 $ctx.__data__ = {
-    'content': ast.literal_eval($ctx.var_content.text)
+    'value': ast.literal_eval($var_value.text)
+}
+
+} ;
+
+attr_list_value
+locals [__data__=dict()]
+@init
+{
+
+}
+@after
+{
+
+}
+    :
+    L_BRACK
+    var_values+=attr_single_value?
+    (
+        COMMA var_values+=attr_single_value
+    )*
+    R_BRACK
+{
+
+$ctx.__data__ = {
+    'values': [v.__data__.get('value') for v in $var_values]
 }
 
 } ;
@@ -541,47 +632,6 @@ node.stop = self._get_stop_pos($ctx)
 
 // ================================ LEXER RULES ===============================
 
-LL_BRACK : {not self._state['tag'] and not self._state['comment']}?
-           '[['
-{
-self._open_bracket(current='[[')
-self._state['tag'] = True
-} ;
-
-RR_BRACK : {self._state['tag'] and not self._state['comment']}?
-           ']]'
-{
-self._close_bracket(expected='[[')
-self._state['tag'] = False
-} ;
-
-LL_COMMENT_BRACK : {not self._state['tag'] and not self._state['comment']}?
-                   '[[#'
-{
-self._open_bracket(current='[[')
-self._state['tag'] = True
-self._state['comment'] = True
-} ;
-
-RR_COMMENT_BRACK : {self._state['tag'] and self._state['comment']}?
-                   ']]'
-{
-self._close_bracket(expected='[[')
-self._state['tag'] = False
-self._state['comment'] = False
-} ;
-
-L_PAREN  : '('
-{
-self._open_bracket(current='(')
-self._state['attr'] = True
-} ;
-
-R_PAREN  : ')'
-{
-self._close_bracket(expected='(')
-self._state['attr'] = False
-} ;
 
 LLL_BRACE : '{{{'
 {
@@ -606,8 +656,75 @@ self._close_bracket(expected='{{')
 self._state['choice'] = False
 } ;
 
-ENTITY_TYPE  : {self._state['tag'] and not self._state['comment']}?
-               (PERCENT | TILDA | COMMAT);
+LL_TEXT_BRACK : {not self._state['tag'] and not self._state['comment']}?
+           '[['
+{
+self._open_bracket(current='[[')
+self._state['tag'] = True
+} ;
+
+RR_TEXT_BRACK : {self._state['tag'] and not self._state['comment']}?
+           ']]'
+{
+self._close_bracket(expected='[[')
+self._state['tag'] = False
+} ;
+
+LL_CALL_BRACK : {not self._state['tag'] and not self._state['comment']}?
+           '[%'
+{
+self._open_bracket(current='[[')
+self._state['tag'] = True
+} ;
+
+RR_CALL_BRACK : {self._state['tag'] and not self._state['comment']}?
+           '%]'
+{
+self._close_bracket(expected='[[')
+self._state['tag'] = False
+} ;
+
+LL_COMMENT_BRACK : {not self._state['tag'] and not self._state['comment']}?
+                   '[#'
+{
+self._open_bracket(current='[[')
+self._state['tag'] = True
+self._state['comment'] = True
+} ;
+
+RR_COMMENT_BRACK : {self._state['tag'] and self._state['comment']}?
+                   '#]'
+{
+self._close_bracket(expected='[[')
+self._state['tag'] = False
+self._state['comment'] = False
+} ;
+
+L_PAREN  : '('
+{
+self._open_bracket(current='(')
+self._state['attr'] = True
+} ;
+
+R_PAREN  : ')'
+{
+self._close_bracket(expected='(')
+self._state['attr'] = False
+} ;
+
+L_BRACK : {self._state['attr']}?
+          '['
+{
+self._open_bracket(current='[')
+self._state['list'] = True
+} ;
+
+R_BRACK : {self._state['attr']}?
+          ']'
+{
+self._close_bracket(expected='[')
+self._state['list'] = False
+} ;
 
 BOOL         : {self._state['tag'] and not self._state['comment']}?
                'True' | 'False' ;
@@ -626,14 +743,16 @@ STRING       : {self._state['tag'] and not self._state['comment']}?
                 '\'' ( STRING_ESC_SEQ | ~[\\\r\n\f'] )* '\''
                 |
                 '"' ( STRING_ESC_SEQ | ~[\\\r\n\f"] )* '"'
-             )
-       ;
+             ) ;
+
+
 fragment STRING_ESC_SEQ : '\\' .;
 
 
-WS	         : {self._state['tag'] and not self._state['comment']}?
-               ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+
-               -> channel(HIDDEN) ;
+WS_SKIP	     : {self._state['tag'] and not self._state['comment']}?
+               WS+ -> channel(HIDDEN) ;
+
+fragment WS  : '\t' | ' ' | '\r' | '\n'| '\u000C' ;
 
 NAME         : {self._state['tag'] and not self._state['comment']}?
                NAME_LETTERS+

@@ -9,5 +9,5 @@ class EchoFunction(Function):
     def __names__(cls):
         return ['echo', 'print']
 
-    def __execute__(self, value, *args, **kwargs):
+    def __execute__(self, value):
         return value

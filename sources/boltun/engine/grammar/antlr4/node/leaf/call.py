@@ -16,13 +16,6 @@ class CallNode(LeafNode, FunctionNode):
     arg_params = attr.ib(type=list, default=attr.Factory(list))
     kwarg_params = attr.ib(type=dict, default=attr.Factory(dict))
 
-    def add_filter(self, filter_):
-        # type: (NodeFilter) -> None
-        self.filters.append(filter_)
-
-    def add_filters(self, filters):
-        self.filters.extend(filters)
-
     def __compile__(self, compiler, environment):
         function_context = \
             FunctionContext(self.name, self.method, self.arg_params,
@@ -35,12 +28,8 @@ class CallNode(LeafNode, FunctionNode):
                                         compiled_function)
 
         if self.optional:
+            if not isinstance(compiled_function, list):
+                compiled_function = [compiled_function]
             compiled_function.append(None)
 
-        if isinstance(compiled_function, list) and len(compiled_function) == 1:
-            return compiled_function[0]
-
         return compiled_function
-
-
-__all__ = ['CallNode']

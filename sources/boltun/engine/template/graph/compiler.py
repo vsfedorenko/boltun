@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import attr
 
 from boltun.engine.template import Compiler
-from .nodes import Call, Const, Entity
+from .nodes import Any, Call, Const
 from .template import ObjectGraphTemplate
 
 
@@ -51,10 +51,30 @@ class ObjectGraphCompiler(Compiler):
         return Const(value)
 
     def nothing(self, environment):
-        super(ObjectGraphCompiler, self).nothing(environment)
+        return super(ObjectGraphCompiler, self).nothing(environment)
 
     def concat(self, part, *other_parts):
-        return super(ObjectGraphCompiler, self).concat(part, *other_parts)
+        parts = [part]
 
-    def any(self, choices, *other_choices):
-        return super(ObjectGraphCompiler, self).any(choices, *other_choices)
+        if other_parts:
+            parts.extend(other_parts)
+
+        concat_parts = []
+        for part in parts:
+            if isinstance(part, list):
+                concat_parts.extend(part)
+            else:
+                concat_parts.append(part)
+
+        return concat_parts
+
+    def any(self, choice, *other_choices):
+        choices = [choice]
+
+        if other_choices:
+            choices.extend(other_choices)
+
+        if len(choices) < 2:
+            raise ValueError("Choices count must be greater or equal 2")
+
+        return Any(choices)

@@ -12,12 +12,15 @@ from boltun.engine.grammar.antlr4.node import Node
 class ForkNode(with_metaclass(ABCMeta, Node)):
     children = attr.ib(type=list, default=attr.Factory(list))
 
-    def add_child(self, node):
-        self.children.append(node)
-
     def __compile__(self, compiler, environment):
         return [
             child.__compile__(compiler, environment)
             for child in
             self.children
         ]
+
+    def add_child(self, node):
+        self.children.append(node)
+
+    def add_children(self, nodes):
+        self.children.extend(nodes)

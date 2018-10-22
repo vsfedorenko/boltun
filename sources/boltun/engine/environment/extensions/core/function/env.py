@@ -11,5 +11,5 @@ class EnvironmentFunction(Function):
     def __names__(cls):
         return ['env', 'environ', 'environment']
 
-    def __execute__(self, name, *args, **kwargs):
+    def __execute__(self, name):
         return os.environ.get(name)

@@ -4,7 +4,8 @@ from boltun.engine.environment.extensions import Extension
 from boltun.engine.environment.extensions.core.filter import JsonFilter, \
     ListFilter, StringFilter, YamlFilter
 from boltun.engine.environment.extensions.core.function import AnyFunction, \
-    EchoFunction, EnvironmentFunction, IncludeFunction, RangeFunction
+    EchoFunction, EnvironmentFunction, IncludeFunction, RangeFunction, \
+    RepeatFunction
 
 
 @attr.s
@@ -16,7 +17,8 @@ class CoreExtension(Extension):
             EchoFunction,
             EnvironmentFunction,
             IncludeFunction,
-            RangeFunction
+            RangeFunction,
+            RepeatFunction
         ]
 
     def filters(self):

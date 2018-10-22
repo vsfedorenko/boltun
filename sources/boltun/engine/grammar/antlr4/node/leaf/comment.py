@@ -11,6 +11,3 @@ class CommentNode(LeafNode):
 
     def __compile__(self, compiler, environment):
         return compiler.nothing(environment)
-
-
-__all__ = ['CommentNode']

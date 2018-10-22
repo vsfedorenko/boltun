@@ -14,6 +14,3 @@ class LeafNodeFactory(object):
 
     def create_data_node(self):
         pass
-
-
-__all__ = ['LeafNodeFactory']

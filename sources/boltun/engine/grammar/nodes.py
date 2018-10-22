@@ -14,9 +14,24 @@ class Node(with_metaclass(ABCMeta, object)):
 
 
 @attr.s
-class FunctionNode(Node):
+class FilteredNode(Node):
+    filters = attr.ib(type=list, default=attr.Factory(list), init=False)
+
+    @abstract_method
+    def __compile__(self, compiler, environment):
+        raise NotImplementedError()
+
+    def add_filter(self, filter_):
+        # type: (NodeFilter) -> None
+        self.filters.append(filter_)
+
+    def add_filters(self, filters):
+        self.filters.extend(filters)
+
+
+@attr.s
+class FunctionNode(FilteredNode):
     name = attr.ib(type=six.string_types)
-    filters = attr.ib(type=list, default=attr.Factory(list))
 
     @abstract_method
     def __compile__(self, compiler, environment):
@@ -34,6 +49,9 @@ class NodeFilter(object):
     @staticmethod
     def compile_sequence(compiler, environment, filters, values):
         if not filters:
+            if isinstance(values, list) and len(values) == 1:
+                return values[0]
+
             return values
 
         filter_ = filters[0]
@@ -43,4 +61,4 @@ class NodeFilter(object):
                                            filtered_values)
 
 
-__all__ = ['Node', 'FunctionNode', 'NodeFilter']
+__all__ = ['Node', 'FilteredNode', 'FunctionNode', 'NodeFilter']

@@ -1,4 +1,3 @@
-import itertools
 import sys
 from abc import ABCMeta, abstractmethod as abstract_method
 
@@ -52,28 +51,13 @@ class Compiler(with_metaclass(ABCMeta, object)):
     def text(self, environment, value):
         raise NotImplementedError()
 
+    @abstract_method
+    def concat(self, part, *other_parts):
+        raise NotImplementedError()
+
+    @abstract_method
+    def any(self, choice, *other_choices):
+        raise NotImplementedError()
+
     def nothing(self, environment):
         return None
-
-    def concat(self, part, *other_parts):
-        parts = [part]
-
-        if other_parts:
-            parts.extend(other_parts)
-
-        if all([isinstance(x, (list,)) for x in parts]):
-            return list(itertools.chain(*parts))
-
-        return parts
-
-    def any(self, choices, *other_choices):
-        if not isinstance(choices, (list,)):
-            choices = [choices]
-
-        if other_choices:
-            choices.extend(other_choices)
-
-        if len(choices) < 2:
-            raise ValueError("Choices count must be greater or equal 2")
-
-        return list(choices)
