@@ -10,7 +10,7 @@ from six import with_metaclass
 class Template(with_metaclass(ABCMeta, object)):
 
     @abstract_method
-    def render(self):
+    def render(self, shuffle=False):
         raise NotImplementedError()
 
     @staticmethod

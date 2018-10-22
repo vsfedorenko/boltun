@@ -15,12 +15,12 @@ class MyTestCase(unittest.TestCase):
 
         render_iter = engine.render(
             "{{ [[ 'Hello, I would like to buy' | str.upper ]] || Where could I get }} "
-            "[% range(1, 10, 2) %] "
-            "[% any('orange', 'fruit', 'apple') | str.upper %] [% repeat('?', [1, 2]) %]"
+            "[% range(1, 10) %] "
+            "[% any('orange', 'fruit', 'apple') | str.upper %] [% repeat('?', [1, 2]) %]",
+            shuffle=True
         )
 
         Template.print_all(render_iter)
-
 
         render_iter = engine.render("{{Hi||Hello}}, what{{'s|| is}} your name")
         Template.print_all(render_iter)

@@ -392,8 +392,12 @@ $ctx.__data__ = {
     'name' : $var_name.text,
     'method': $var_method_name.text,
     'optional': $var_optional is not None,
-    'arg_params' : $ctx.var_attr.__data__.get('arg_params') if $ctx.var_attr else [],
-    'kwarg_params' : $ctx.var_attr.__data__.get('kwarg_params') if $ctx.var_attr else {}
+
+    'arg_params' : $ctx.var_attr.__data__.get('arg_params') \
+                   if $ctx.var_attr else [],
+
+    'kwarg_params' : $ctx.var_attr.__data__.get('kwarg_params') \
+                     if $ctx.var_attr else {}
 }
 
 } ;
@@ -550,6 +554,7 @@ $ctx.__data__ = {
 
 } ;
 
+// ======================= ATTRIBUTES ARG SINGLE VALUE ========================
 
 attr_single_value
 locals [__data__=dict()]
@@ -569,6 +574,8 @@ $ctx.__data__ = {
 }
 
 } ;
+
+// ======================== ATTRIBUTES ARG LIST VALUE =========================
 
 attr_list_value
 locals [__data__=dict()]

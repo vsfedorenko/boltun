@@ -28,6 +28,6 @@ class Engine(object):
                                        environment=self._environment)
         return template
 
-    def render(self, input_str):
+    def render(self, input_str, *args, **kwargs):
         template = self.create_template(input_str)
-        return template.render()
+        return template.render(*args, **kwargs)
