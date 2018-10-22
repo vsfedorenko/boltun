@@ -7,7 +7,12 @@ from .base import ForkNode
 
 @attr.s
 class ContentNode(ForkNode):
-    pass
 
+    def __compile__(self, compiler, environment):
+        compiled_content = \
+            super(ContentNode, self).__compile__(compiler, environment)
 
-__all__ = ['ContentNode']
+        if len(compiled_content) == 1:
+            return compiled_content[0]
+
+        return compiler.concat(*compiled_content)

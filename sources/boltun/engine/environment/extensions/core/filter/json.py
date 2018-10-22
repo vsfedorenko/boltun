@@ -6,6 +6,7 @@ from boltun.engine.environment.extensions import Filter
 
 
 class JsonFilter(Filter):
+
     @classmethod
     def __names__(cls):
         return ['json']

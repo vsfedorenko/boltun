@@ -18,8 +18,6 @@ class ForkNode(with_metaclass(ABCMeta, Node)):
     def __compile__(self, compiler, environment):
         return [
             child.__compile__(compiler, environment)
-            for child in self.children
+            for child in
+            self.children
         ]
-
-
-__all__ = ['ForkNode']

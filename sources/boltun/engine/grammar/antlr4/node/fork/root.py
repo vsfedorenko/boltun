@@ -11,6 +11,3 @@ class RootNode(ForkNode):
     def __compile__(self, compiler, environment):
         return compiler.concat(
             *super(RootNode, self).__compile__(compiler, environment))
-
-
-__all__ = ['RootNode']

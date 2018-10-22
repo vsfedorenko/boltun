@@ -14,6 +14,3 @@ class ForkNodeFactory(object):
 
     def create_content_node(self):
         pass
-
-
-__all__ = ['ForkNodeFactory']

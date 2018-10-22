@@ -59,15 +59,11 @@ class Compiler(with_metaclass(ABCMeta, object)):
     def nothing(self, environment):
         return None
 
-    def concat(self, parts, *other_parts):
-        if not isinstance(parts, (list,)):
-            parts = [parts]
+    def concat(self, part, *other_parts):
+        parts = [part]
 
         if other_parts:
             parts.extend(other_parts)
-
-        if len(parts) == 1:
-            return parts[0]
 
         if all([isinstance(x, (list,)) for x in parts]):
             return list(itertools.chain(*parts))

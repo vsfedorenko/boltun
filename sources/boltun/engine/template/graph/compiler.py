@@ -56,8 +56,8 @@ class ObjectGraphCompiler(Compiler):
     def nothing(self, environment):
         super(ObjectGraphCompiler, self).nothing(environment)
 
-    def concat(self, parts, *other_parts):
-        return super(ObjectGraphCompiler, self).concat(parts, *other_parts)
+    def concat(self, part, *other_parts):
+        return super(ObjectGraphCompiler, self).concat(part, *other_parts)
 
     def any(self, choices, *other_choices):
         return super(ObjectGraphCompiler, self).any(choices, *other_choices)

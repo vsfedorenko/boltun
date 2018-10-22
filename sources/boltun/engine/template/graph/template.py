@@ -1,3 +1,5 @@
+import random
+
 import attr
 
 from boltun.engine.environment import Environment
@@ -12,21 +14,28 @@ class ObjectGraphTemplate(Template):
     def render(self):
         return self._generator(self._graph)
 
-    def _generator(self, items):
+    def _generator(self, items, shuffle=False):
         if not items:
             yield ""
+            return
         else:
-            current_item = items.pop()
-
-            if callable(current_item):
-                current_item = current_item()
-
+            current = items.pop()
             forward_generator = self._generator(items)
 
-            if isinstance(current_item, list):
+            if callable(current):
+                current = current()
+
+            if isinstance(current, list):
+                current = [
+                    item() if callable(item) else item
+                    for item in current
+                ]
+
+                if shuffle:
+                    random.shuffle(current)
                 for forward_item in forward_generator:
-                    for item in current_item:
+                    for item in current:
                         yield str(forward_item) + str(item)
             else:
                 for forward_item in forward_generator:
-                    yield str(forward_item) + str(current_item)
+                    yield str(forward_item) + str(current)
