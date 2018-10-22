@@ -1,7 +1,9 @@
 import itertools
+import sys
 from abc import ABCMeta, abstractmethod as abstract_method
 
 import attr
+import six
 from six import with_metaclass
 
 
@@ -11,6 +13,20 @@ class Template(with_metaclass(ABCMeta, object)):
     @abstract_method
     def render(self):
         raise NotImplementedError()
+
+    @staticmethod
+    def print_all(result, print_func=None, handle=sys.stdout):
+        if not print_func:
+            def py_print(v, handle):
+                return six.print_(v, file=handle)
+
+            print_func = py_print
+
+        try:
+            while True:
+                print_func(next(result), handle=handle)
+        except StopIteration:
+            pass
 
 
 @attr.s

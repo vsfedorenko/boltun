@@ -16,6 +16,9 @@ class Node(with_metaclass(ABCMeta, object)):
 class Const(Node):
     value = attr.ib()
 
+    def __call__(self, *args, **kwargs):
+        return self.value
+
 
 @attr.s
 class Call(Node):

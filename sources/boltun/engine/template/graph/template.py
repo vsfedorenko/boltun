@@ -2,7 +2,6 @@ import attr
 
 from boltun.engine.environment import Environment
 from boltun.engine.template import Template
-from .nodes import Call, Const, Entity
 
 
 @attr.s
@@ -11,12 +10,23 @@ class ObjectGraphTemplate(Template):
     _environment = attr.ib(type=Environment)
 
     def render(self):
-        for obj in self._graph:
-            if isinstance(obj, Const):
-                print(obj.value)
+        return self._generator(self._graph)
 
-            if isinstance(obj, Call):
-                print(obj.callable())
+    def _generator(self, items):
+        if not items:
+            yield ""
+        else:
+            current_item = items.pop()
 
-            if isinstance(obj, Entity):
-                print(obj.name)
+            if callable(current_item):
+                current_item = current_item()
+
+            forward_generator = self._generator(items)
+
+            if isinstance(current_item, list):
+                for forward_item in forward_generator:
+                    for item in current_item:
+                        yield str(forward_item) + str(item)
+            else:
+                for forward_item in forward_generator:
+                    yield str(forward_item) + str(current_item)
