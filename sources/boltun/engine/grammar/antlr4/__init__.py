@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function
+
 from .Antlr4Grammar import Antlr4Grammar
 from .Antlr4GrammarMode import Antlr4GrammarMode
 from .Antlr4GrammarErrorStrategy import Antlr4GrammarErrorStrategy

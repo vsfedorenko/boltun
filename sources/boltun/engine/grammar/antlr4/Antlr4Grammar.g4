@@ -4,7 +4,6 @@ options {
 }
 
 @parser::header {
-
 import ast
 import logging
 
@@ -16,7 +15,6 @@ from .node.fork import ChoiceNode, ContentNode, RootNode
 from .node.leaf import CallNode, CommentNode, DataNode
 
 logger = logging.getLogger(__name__)
-
 }
 
 @parser::members {
@@ -88,6 +86,21 @@ def _state(self):
         self.__state = defaultdict(bool)
         return self.__state
 
+def _in(self, state):
+    self._state[state] += 1
+
+def _out(self, state):
+    self._state[state] -= 1
+
+def _is(self, state):
+    return self._state[state] > 0
+
+def _not(self, state):
+    return self._state[state] == 0
+
+def _reset_all_states(self):
+    del self.__state
+
 @property
 def _bracket_queue(self):
     try:
@@ -105,15 +118,15 @@ def _close_bracket(self, expected):
     return None
 
 def reset(self):
-    super(BoltunLexer, self).reset()
-    self._state['tag'] = False
-    self._state['choice'] = False
-    self._state['comment'] = False
+    super(Antlr4GrammarLexer, self).reset()
+
+    self._reset_all_states()
     while not self._bracket_queue.empty():
         try:
             self._bracket_queue.get(False)
         except Empty:
             continue
+
     self._bracket_queue.task_done()
 
 }
@@ -170,6 +183,8 @@ self.node_stack.peek().add_child(content_node)
 }
     :
     (
+        polyadic_tag
+        |
         unary_tag
         |
         data
@@ -306,13 +321,13 @@ self.node_stack.peek().add_child(node)
     :
     LL_TEXT_BRACK
     var_optional=QUESTION?
-    var_data=STRING
+    var_data=STRING?
     var_optional=QUESTION?
     (PIPE var_fltr_chain=fltr_chain)?
     RR_TEXT_BRACK
 {
 
-data=ast.literal_eval($var_data.text)
+data=ast.literal_eval($var_data.text) if $var_data else None
 optional=$var_optional is not None
 
 node = DataNode(content=data, optional=optional)
@@ -492,7 +507,7 @@ locals [__data__=dict()]
 {
 
 $ctx.__data__ = {
-    'value': $ctx.var_value.__data__.get('content')
+    'value': $ctx.var_value.__data__.get('value')
 }
 
 } ;
@@ -517,7 +532,7 @@ locals [__data__=dict()]
 
 $ctx.__data__ = {
     'name': $ctx.var_name.text,
-    'value': $ctx.var_value.__data__.get('content')
+    'value': $ctx.var_value.__data__.get('value')
 }
 
 } ;
@@ -549,7 +564,7 @@ elif $ctx.var_list_content:
     content = $ctx.var_list_content.__data__.get('values')
 
 $ctx.__data__ = {
-    'content': content
+    'value': content
 }
 
 } ;
@@ -589,9 +604,9 @@ locals [__data__=dict()]
 }
     :
     L_BRACK
-    var_values+=attr_single_value?
+    var_values+=attr_value?
     (
-        COMMA var_values+=attr_single_value
+        COMMA var_values+=attr_value
     )*
     R_BRACK
 {
@@ -626,12 +641,14 @@ self.node_stack.peek().add_child(node)
     RR_COMMENT_BRACK
 {
 
-content = data_str = ''.join([c.text for c in $var_chars])
+content = ''.join([c.text for c in $var_chars]) \
+                        if $var_chars else None
+
 $ctx.__data__ = {
     'content' : content
 }
 
-node = CommentNode(content)
+node = CommentNode(content=content)
 node.start = self._get_start_pos($ctx)
 node.stop = self._get_stop_pos($ctx)
 
@@ -643,109 +660,123 @@ node.stop = self._get_stop_pos($ctx)
 LLL_BRACE : '{{{'
 {
 self._open_bracket(current='{{{')
-self._state['choice_short'] = True
+self._in(state='choice_short')
 } ;
 RRR_BRACE : '}}}'
 {
 self._close_bracket(expected='{{{')
-self._state['choice_short'] = False
+self._out(state='choice_short')
 } ;
 
 LL_BRACE : '{{'
 {
 self._open_bracket(current='{{')
-self._state['choice'] = True
+self._in(state='choice')
 } ;
 
 RR_BRACE : '}}'
 {
 self._close_bracket(expected='{{')
-self._state['choice'] = False
+self._out(state='choice')
 } ;
 
-LL_TEXT_BRACK : {not self._state['tag'] and not self._state['comment']}?
-           '[['
+LL_TEXT_BRACK : { self._not(state='tag') \
+                  and self._not(state='attr') \
+                  and self._not(state='list') \
+                  and self._not(state='comment') }?
+                '[['
 {
 self._open_bracket(current='[[')
-self._state['tag'] = True
+self._in(state='tag')
 } ;
 
-RR_TEXT_BRACK : {self._state['tag'] and not self._state['comment']}?
-           ']]'
+RR_TEXT_BRACK : { self._is(state='tag') \
+                  and self._not(state='comment') \
+                  and self._not(state='attr') \
+                  and self._not(state='list') }?
+                ']]'
 {
 self._close_bracket(expected='[[')
-self._state['tag'] = False
+self._out(state='tag')
 } ;
 
-LL_CALL_BRACK : {not self._state['tag'] and not self._state['comment']}?
-           '[%'
+LL_CALL_BRACK : { self._not(state='tag') \
+                  and self._not(state='comment') }?
+                '[%'
 {
 self._open_bracket(current='[[')
-self._state['tag'] = True
+self._in(state='tag')
 } ;
 
-RR_CALL_BRACK : {self._state['tag'] and not self._state['comment']}?
-           '%]'
+RR_CALL_BRACK : { self._is(state='tag') \
+                  and self._not(state='comment') }?
+                '%]'
 {
 self._close_bracket(expected='[[')
-self._state['tag'] = False
+self._out(state='tag')
 } ;
 
-LL_COMMENT_BRACK : {not self._state['tag'] and not self._state['comment']}?
+LL_COMMENT_BRACK : { self._not(state='tag') \
+                     and self._not(state='comment') }?
                    '[#'
 {
 self._open_bracket(current='[[')
-self._state['tag'] = True
-self._state['comment'] = True
+self._in(state='tag')
+self._in(state='comment')
 } ;
 
-RR_COMMENT_BRACK : {self._state['tag'] and self._state['comment']}?
+RR_COMMENT_BRACK : { self._is(state='tag') \
+                     and self._is(state='comment') }?
                    '#]'
 {
 self._close_bracket(expected='[[')
-self._state['tag'] = False
-self._state['comment'] = False
+self._out(state='tag')
+self._out(state='comment')
 } ;
 
-L_PAREN  : '('
+L_PAREN  : { self._not(state='comment') }?
+           '('
 {
 self._open_bracket(current='(')
-self._state['attr'] = True
+self._in(state='attr')
 } ;
 
-R_PAREN  : ')'
+R_PAREN  : { self._not(state='comment') }?
+           ')'
 {
 self._close_bracket(expected='(')
-self._state['attr'] = False
+self._out(state='attr')
 } ;
 
-L_BRACK : {self._state['attr']}?
+L_BRACK : { self._is(state='attr') \
+            and self._not(state='comment') }?
           '['
 {
 self._open_bracket(current='[')
-self._state['list'] = True
+self._in(state='list')
 } ;
 
-R_BRACK : {self._state['attr']}?
+R_BRACK : { self._is(state='attr') \
+            and self._not(state='comment') }?
           ']'
 {
 self._close_bracket(expected='[')
-self._state['list'] = False
+self._out(state='list')
 } ;
 
-BOOL         : {self._state['tag'] and not self._state['comment']}?
+BOOL         : {self._is(state='tag') and self._not(state='comment')}?
                'True' | 'False' ;
 
-NUMBER       : {self._state['tag'] and not self._state['comment']}?
+NUMBER       : {self._is(state='tag') and self._not(state='comment')}?
                INT_NUMBER | FLOAT_NUMBER ;
 
-INT_NUMBER   : {self._state['tag'] and not self._state['comment']}?
+INT_NUMBER   : {self._is(state='tag') and self._not(state='comment')}?
                ('0'..'9')+ ;
 
-FLOAT_NUMBER : {self._state['tag'] and not self._state['comment']}?
+FLOAT_NUMBER : {self._is(state='tag') and self._not(state='comment')}?
                INT_NUMBER+ DOT INT_NUMBER* ;
 
-STRING       : {self._state['tag'] and not self._state['comment']}?
+STRING       : {self._is(state='tag') and self._not(state='comment')}?
              (
                 '\'' ( STRING_ESC_SEQ | ~[\\\r\n\f'] )* '\''
                 |
@@ -753,15 +784,15 @@ STRING       : {self._state['tag'] and not self._state['comment']}?
              ) ;
 
 
-fragment STRING_ESC_SEQ : '\\' .;
+fragment STRING_ESC_SEQ : '\\' . ;
 
 
-WS_SKIP	     : {self._state['tag'] and not self._state['comment']}?
+WS_SKIP	     : {self._is(state='tag') and self._not(state='comment')}?
                WS+ -> channel(HIDDEN) ;
 
 fragment WS  : '\t' | ' ' | '\r' | '\n'| '\u000C' ;
 
-NAME         : {self._state['tag'] and not self._state['comment']}?
+NAME         : {self._is(state='tag') and self._not(state='comment')}?
                NAME_LETTERS+
                (
                     NAME_LETTERS
@@ -773,23 +804,23 @@ fragment NAME_LETTERS : 'a'..'z' | 'A'..'Z' | '_' | '-';
 fragment NAME_NUMBERS : '0'..'9';
 
 
-COMMENT_DATA : {self._state['tag'] and self._state['comment']}? . ;
-DATA         : {not self._state['tag']}? . ;
+COMMENT_DATA : {self._is(state='tag') and self._is(state='comment')}? . ;
+DATA         : {self._not(state='tag')}? . ;
 
-DOUBLE_PIPE  : {self._state['choice'] and not self._state['tag']}? '||' ;
-PIPE         : {self._state['tag']}? '|' ;
-SLASH        : {self._state['tag']}? '/' ;
-AMP	         : {self._state['tag']}? '&' ;
-HASH	     : {self._state['tag']}? '#' ;
-GREATER      : {self._state['tag']}? '>' ;
-HAT	         : {self._state['tag']}? '^' ;
-EQUAL        : {self._state['tag']}? '=' ;
-BANG         : {self._state['tag']}? '!' ;
-DOT          : {self._state['tag']}? '.' ;
-COMMA        : {self._state['tag']}? ',' ;
-PERCENT      : {self._state['tag']}? '%' ;
-TILDA        : {self._state['tag']}? '~' ;
-COMMAT       : {self._state['tag']}? '@' ;
-QUESTION     : {self._state['tag']}? '?' ;
+DOUBLE_PIPE  : {self._is(state='choice') and self._not(state='tag')}? '||' ;
+PIPE         : {self._is(state='tag')}? '|' ;
+SLASH        : {self._is(state='tag')}? '/' ;
+AMP	         : {self._is(state='tag')}? '&' ;
+HASH	     : {self._is(state='tag')}? '#' ;
+GREATER      : {self._is(state='tag')}? '>' ;
+HAT	         : {self._is(state='tag')}? '^' ;
+EQUAL        : {self._is(state='tag')}? '=' ;
+BANG         : {self._is(state='tag')}? '!' ;
+DOT          : {self._is(state='tag')}? '.' ;
+COMMA        : {self._is(state='tag')}? ',' ;
+PERCENT      : {self._is(state='tag')}? '%' ;
+TILDA        : {self._is(state='tag')}? '~' ;
+COMMAT       : {self._is(state='tag')}? '@' ;
+QUESTION     : {self._is(state='tag')}? '?' ;
 
 UNKNOWN      : . ;

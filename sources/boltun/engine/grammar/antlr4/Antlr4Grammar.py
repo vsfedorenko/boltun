@@ -1,13 +1,15 @@
+from __future__ import absolute_import, division, print_function
+
 import attr
 from antlr4 import CommonTokenStream, InputStream
 
 from boltun.engine.grammar import Grammar, Result
-from boltun.engine.grammar.antlr4.node import Node
 from .Antlr4GrammarErrorStrategy import Antlr4GrammarErrorStrategy
 from .Antlr4GrammarLexer import Antlr4GrammarLexer
 from .Antlr4GrammarMode import Antlr4GrammarMode
 from .Antlr4GrammarParser import Antlr4GrammarParser
 from .Antlr4GrammarVisitor import Antlr4GrammarVisitor
+from .node import Node
 
 
 @attr.s
