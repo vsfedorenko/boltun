@@ -25,8 +25,8 @@ class ContentNode(ForkNode):
                 node = ContentNode()
                 node.add_child(child.strip())
                 return node
-        else:
-            return self.lstrip().rstrip()
+            return child
+        return self.lstrip().rstrip()
 
     def lstrip(self):
         node = ContentNode()

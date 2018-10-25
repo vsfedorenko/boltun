@@ -6,7 +6,7 @@ from .callable_holders import (FilterHolder, FunctionHolder)
 from .variable_holder import VariableHolder
 
 
-@attr.s(frozen=True)
+@attr.s
 class Environment(object):
     engine = attr.ib()
 
@@ -37,8 +37,8 @@ class Environment(object):
             raise KeyError("Extension '{type}' is already "
                            "registered".format(type=extension_type))
 
-        self.functions.extend(extension.functions(), replace)
-        self.filters.extend(extension.filters(), replace)
+        self.functions.extend(extension.__functions__(), replace)
+        self.filters.extend(extension.__filters__(), replace)
 
         self._extensions[extension_type] = extension
 

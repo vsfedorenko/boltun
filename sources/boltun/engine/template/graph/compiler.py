@@ -25,7 +25,7 @@ class ObjectGraphCompiler(Compiler):
         function_kwargs = function_context.kwarg_params
 
         function_callable = \
-            environment.functions.get(function_name, function_method)
+            environment.__functions__.get(function_name, function_method)
 
         def defer_function_callable():
             return function_callable(*function_args, **function_kwargs)
@@ -39,7 +39,7 @@ class ObjectGraphCompiler(Compiler):
         filter_args = filter_context.arg_params
         filter_kwargs = filter_context.kwarg_params
 
-        filter_callable = environment.filters.get(filter_name, filter_method)
+        filter_callable = environment.__filters__.get(filter_name, filter_method)
 
         def defer_filter_callable():
             return filter_callable(filter_value(), *filter_args,
@@ -50,9 +50,6 @@ class ObjectGraphCompiler(Compiler):
     def text(self, environment, value):
         return Const(value)
 
-    def nothing(self, environment):
-        return super(ObjectGraphCompiler, self).nothing(environment)
-
     def concat(self, part, *other_parts):
         parts = [part]
 
@@ -60,11 +57,11 @@ class ObjectGraphCompiler(Compiler):
             parts.extend(other_parts)
 
         concat_parts = []
-        for part in parts:
+        for part_item in parts:
             if isinstance(part, list):
-                concat_parts.extend(part)
+                concat_parts.extend(part_item)
             else:
-                concat_parts.append(part)
+                concat_parts.append(part_item)
 
         return concat_parts
 

@@ -1,22 +1,26 @@
 import attr
-from antlr4 import InputStream
+import yaml
 
 from boltun.engine import Engine
-from boltun.engine.grammar import RecognitionDisabledException
 
 
 @attr.s
 class YamlProcessor(object):
     engine = attr.ib(default=attr.Factory(Engine))
 
-    def match(self, input_):
-        try:
-            nodes = self.engine.process(input_stream=InputStream(input_))
-        except RecognitionDisabledException:
-            return False
+    def __enable__(self, tag="!boltun", resolver=False):
+        yaml.add_constructor(tag, self)
 
-        return True if nodes.children else False
+        if resolver:
+            yaml.add_implicit_resolver(tag, self._match)
 
     def __call__(self, loader, node, **kwargs):
-        engine_result = self.engine.process(InputStream(node.value))
-        return str(''.join(engine_result[0]))
+        return self.engine.render(node.value)
+
+    def _match(self, input_):
+        try:
+            template = self.engine.create_template(input_)
+        except Exception:
+            return False
+
+        return True if template else False

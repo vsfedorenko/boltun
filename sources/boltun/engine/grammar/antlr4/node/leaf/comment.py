@@ -15,7 +15,7 @@ class CommentNode(LeafNode):
 
         self.content = self.content.strip()
 
-        if len(self.content) == 0:
+        if not self.content:
             self.content = None
 
     def __compile__(self, compiler, environment):

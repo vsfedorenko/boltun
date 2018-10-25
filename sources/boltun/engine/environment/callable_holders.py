@@ -6,7 +6,7 @@ import attr
 import six
 from six import with_metaclass
 
-from boltun.engine.environment.extensions import Filter, Function
+from boltun.engine.environment.extension import Filter, Function
 
 
 @attr.s
@@ -64,12 +64,12 @@ class CallableHolder(with_metaclass(ABCMeta, object)):
         func = self.set if set_ else self.add
 
         if isinstance(list_or_dict, (list,)):
-            for v in list_or_dict:
-                func(v)
+            for item in list_or_dict:
+                func(item)
 
         if isinstance(list_or_dict, (dict,)):
-            for k, v in six.iteritems(list_or_dict):
-                func(v, k)
+            for k, item in six.iteritems(list_or_dict):
+                func(item, k)
 
     def get(self, name, method=None):
         if name not in self._items:

@@ -1,5 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+.tests-reports
+
 ### Windows template
 # Windows thumbnail cache files
 Thumbs.db
@@ -87,7 +89,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
+# C extension
 *.so
 
 # Distribution / packaging

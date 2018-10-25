@@ -3,15 +3,18 @@ from __future__ import absolute_import, division, print_function
 import attr
 
 from boltun.engine.environment import Environment
-from boltun.engine.environment.extensions.core import CoreExtension
+from boltun.engine.environment.extension.core import CoreExtension
 from boltun.engine.grammar import Grammar
+from boltun.engine.grammar.antlr4 import Antlr4Grammar
 from boltun.engine.template import Compiler
+from boltun.engine.template.graph import ObjectGraphCompiler
 
 
 @attr.s
 class Engine(object):
-    grammar = attr.ib(type=Grammar)
-    compiler = attr.ib(type=Compiler)
+    grammar = attr.ib(type=Grammar, default=attr.Factory(Antlr4Grammar))
+    compiler = attr.ib(type=Compiler,
+                       default=attr.Factory(ObjectGraphCompiler))
 
     _environment = attr.ib(type=Environment,
                            default=attr.Factory(Environment, takes_self=True),

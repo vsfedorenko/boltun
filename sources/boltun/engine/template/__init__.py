@@ -18,8 +18,8 @@ class Template(with_metaclass(ABCMeta, object)):
     @staticmethod
     def print_all(result, print_func=None, handle=sys.stdout):
         if not print_func:
-            def py_print(v, handle):
-                return six.print_(v, file=handle)
+            def py_print(value, handle):
+                return six.print_(value, file=handle)
 
             print_func = py_print
 
