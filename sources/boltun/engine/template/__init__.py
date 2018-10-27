@@ -9,6 +9,14 @@ from six import with_metaclass
 
 
 @attr.s
+class Sample(object):
+    content = attr.ib()
+
+    def __str__(self):
+        return self.content
+
+
+@attr.s
 class Template(with_metaclass(ABCMeta, object)):
 
     @abstract_method

@@ -46,7 +46,14 @@ class FakeClass(object):
         """
         return other_value.lower()
 
-    @recursive_callable(value_key=2)
+    @recursive_callable
+    def self_method_without_any_reference(self, other_value):
+        """
+        :type other_value: [list, dict, str]
+        """
+        return other_value.lower()
+
+    @recursive_callable(value_key='other_value')
     def self_method_with_pos_reference(self, fake_value, other_value):
         """
         :type other_value: [list, dict, str]
@@ -70,6 +77,7 @@ class TestRecursiveCallable(unittest.TestCase):
         lambda x: _fake_class_instance.cls_method_with_pos_reference(
             _randint(), x
         ),
+        lambda x: _fake_class_instance.self_method_without_any_reference(x),
         lambda x: _fake_class_instance.self_method_with_pos_reference(
             _randint(), x
         ),

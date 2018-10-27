@@ -44,7 +44,8 @@ class DictRecursiveProcessor(RecursionProcessor):
         }
 
 
-def recursive_callable(value_pos=0, value_key=None, recursive_iters=None):
+def recursive_callable(method_or_func=None, value_pos=0, value_key=None,
+                       recursive_iters=None):
     if recursive_iters is None:
         recursive_iters = [
             ListRecursionProcessor(),
@@ -120,4 +121,5 @@ def recursive_callable(value_pos=0, value_key=None, recursive_iters=None):
 
         return wrapper
 
-    return recursive_callable_decorator
+    return recursive_callable_decorator(method_or_func) \
+        if callable(method_or_func) else recursive_callable_decorator

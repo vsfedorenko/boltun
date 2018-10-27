@@ -6,7 +6,7 @@ import attr
 from six import with_metaclass
 
 
-def boltun_function(names=None):
+def boltun_function(func_or_method=None, names=None):
     def callable_instance(func):
         func.__boltun_function__ = True
         func.__boltun_names__ = names if names else None
@@ -16,7 +16,8 @@ def boltun_function(names=None):
 
         return wrapper
 
-    return callable_instance
+    return callable_instance(func_or_method) \
+        if callable(func_or_method) else callable_instance
 
 
 @attr.s
