@@ -4,10 +4,10 @@ import unittest
 
 from parameterized import parameterized
 
-from boltun.util import recursive_callable
+from boltun.util import recursive
 
 
-@recursive_callable(value_pos=1)
+@recursive(value_pos=1)
 def _method_with_pos_reference_1(fake_value, other_value):
     """
     :type other_value: [list, dict, str]
@@ -15,7 +15,7 @@ def _method_with_pos_reference_1(fake_value, other_value):
     return other_value.lower()
 
 
-@recursive_callable(value_pos=1)
+@recursive(value_pos=1)
 def _method_with_pos_reference_2(fake_value, other_value,
                                  another_fake_value=2):
     """
@@ -24,7 +24,7 @@ def _method_with_pos_reference_2(fake_value, other_value,
     return other_value.lower()
 
 
-@recursive_callable(value_key='other_value')
+@recursive(value_key='other_value')
 def _method_with_key_reference(fake_value, other_value):
     """
     :type other_value: [list, dict, str]
@@ -39,21 +39,21 @@ def _randint():
 class FakeClass(object):
 
     @classmethod
-    @recursive_callable(value_pos=2)
+    @recursive(value_pos=2)
     def cls_method_with_pos_reference(cls, fake_value, other_value):
         """
         :type other_value: [list, dict, str]
         """
         return other_value.lower()
 
-    @recursive_callable
+    @recursive
     def self_method_without_any_reference(self, other_value):
         """
         :type other_value: [list, dict, str]
         """
         return other_value.lower()
 
-    @recursive_callable(value_key='other_value')
+    @recursive(value_key='other_value')
     def self_method_with_pos_reference(self, fake_value, other_value):
         """
         :type other_value: [list, dict, str]
@@ -71,16 +71,13 @@ class TestRecursiveCallable(unittest.TestCase):
         lambda x: _method_with_pos_reference_2(_randint(), x, _randint()),
         lambda x: _method_with_key_reference(_randint(), x),
         lambda x: _method_with_key_reference(
-            fake_value=_randint(), other_value=x
-        ),
+            fake_value=_randint(), other_value=x),
         lambda x: FakeClass.cls_method_with_pos_reference(_randint(), x),
         lambda x: _fake_class_instance.cls_method_with_pos_reference(
-            _randint(), x
-        ),
+            _randint(), x),
         lambda x: _fake_class_instance.self_method_without_any_reference(x),
         lambda x: _fake_class_instance.self_method_with_pos_reference(
-            _randint(), x
-        ),
+            _randint(), x),
     ]
 
     @parameterized.expand(list(

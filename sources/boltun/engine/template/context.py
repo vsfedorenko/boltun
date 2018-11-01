@@ -7,15 +7,15 @@ import six
 @attr.s
 class FunctionContext(object):
     name = attr.ib(type=six.string_types)
-    method = attr.ib(type=six.string_types, default=None)
-    arg_params = attr.ib(type=list, default=attr.Factory(list))
-    kwarg_params = attr.ib(type=dict, default=attr.Factory(dict))
+    ref_names = attr.ib(type=list, factory=list)
+    arg_params = attr.ib(type=list, factory=list)
+    kwarg_params = attr.ib(type=dict, factory=dict)
 
 
 @attr.s
 class FilterContext(object):
     name = attr.ib(type=six.string_types)
     value = attr.ib()
-    method = attr.ib(type=six.string_types, default=None)
-    arg_params = attr.ib(type=list, default=attr.Factory(list))
-    kwarg_params = attr.ib(type=dict, default=attr.Factory(dict))
+    ref_names = attr.ib(type=list, factory=list)
+    arg_params = attr.ib(type=list, factory=list)
+    kwarg_params = attr.ib(type=dict, factory=dict)

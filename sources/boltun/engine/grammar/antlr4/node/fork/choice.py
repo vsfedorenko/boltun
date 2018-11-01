@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import attr
 
-from .base import ForkNode
+from ._base import ForkNode
 from .content import ContentNode
 
 

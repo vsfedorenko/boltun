@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 import attr
 
 from boltun.engine.environment import Environment
+from boltun.engine.environment.extension import boltun
 from boltun.engine.environment.extension.core import CoreExtension
 from boltun.engine.grammar import Grammar
 from boltun.engine.grammar.antlr4 import Antlr4Grammar
@@ -33,6 +34,9 @@ class Engine(object):
                                        environment=self._environment)
         return template
 
-    def render(self, input_str, *args, **kwargs):
+    def render(self, input_str):
         template = self.create_template(input_str)
-        return template.render(*args, **kwargs)
+        return template.render()
+
+    def register(self, maybe_target=None, context=None):
+        return boltun(maybe_target, context)

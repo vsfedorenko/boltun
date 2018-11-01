@@ -5,7 +5,7 @@ import attr
 
 @attr.s
 class Stack(object):
-    __items = attr.ib(type=list, default=attr.Factory(list))
+    __items = attr.ib(type=list, factory=list)
 
     def push(self, item):
         self.__items.append(item)

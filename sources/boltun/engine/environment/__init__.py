@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import attr
 
-from .callable_holders import (FilterHolder, FunctionHolder)
+from boltun.engine.environment.namespace_holder import NamespaceHolder
 from .variable_holder import VariableHolder
 
 
@@ -14,33 +14,26 @@ class Environment(object):
                         default=attr.Factory(VariableHolder, takes_self=True),
                         init=False)
 
-    functions = attr.ib(type=FunctionHolder,
-                        default=attr.Factory(FunctionHolder, takes_self=True),
-                        init=False)
+    namespaces = attr.ib(type=NamespaceHolder,
+                         default=attr.Factory(NamespaceHolder,
+                                              takes_self=True), init=False)
 
-    filters = attr.ib(type=FilterHolder,
-                      default=attr.Factory(FilterHolder, takes_self=True),
-                      init=False)
-
-    _extensions = attr.ib(type=dict, default=attr.Factory(dict), init=False)
+    extensions = attr.ib(type=dict, factory=dict, init=False)
 
     def get_extensions(self):
-        return dict(self._extensions)
+        return dict(self.extensions)
 
     def get_extension(self, extension_type):
-        return self._extensions[extension_type]
+        return self.extensions[extension_type]
 
     def add_extension(self, extension, replace=False):
         extension_type = type(extension)
 
-        if not replace and extension_type in self._extensions:
+        if not replace and extension_type in self.extensions:
             raise KeyError("Extension '{type}' is already "
                            "registered".format(type=extension_type))
 
-        self.functions.extend(extension.__functions__(), replace)
-        self.filters.extend(extension.__filters__(), replace)
-
-        self._extensions[extension_type] = extension
+        self.extensions[extension_type] = extension
 
 
 __all__ = ['Environment']

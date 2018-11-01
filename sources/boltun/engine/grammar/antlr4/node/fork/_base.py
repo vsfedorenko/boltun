@@ -10,7 +10,7 @@ from boltun.engine.grammar.antlr4.node import Node
 
 @attr.s
 class ForkNode(with_metaclass(ABCMeta, Node)):
-    children = attr.ib(type=list, default=attr.Factory(list))
+    children = attr.ib(type=list, factory=list)
 
     def __compile__(self, compiler, environment):
         return [

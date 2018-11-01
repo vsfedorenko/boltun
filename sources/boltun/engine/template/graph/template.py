@@ -1,9 +1,7 @@
-import random
-
 import attr
 
 from boltun.engine.environment import Environment
-from boltun.engine.template import Template
+from boltun.engine.template import Sample, Template
 from .nodes import Any, Call, Const
 
 
@@ -13,36 +11,33 @@ class ObjectGraphTemplate(Template):
     _environment = attr.ib(type=Environment)
 
     def render(self, shuffle=False):
-        return self.generator(self._graph, shuffle)
+        return self.generator(self._graph)
 
-    def generator(self, items, shuffle=False):
+    def generator(self, items):
         if not items:
-            yield ""
-        elif not isinstance(items, (list,)):
-            yield items
-        else:
-            current = self.render_item(items.pop(), shuffle=shuffle)
-            forward_generator = self.generator(items, shuffle=shuffle)
+            yield None
+            return
 
+        current = self.render_item(items[0])
+
+        for forward_item in self.generator(items[1:]):
             if isinstance(current, list):
-                for forward_item in forward_generator:
-                    for item in current:
-                        yield str(forward_item) + str(item)
+                for index, item in enumerate(current):
+                    yield Sample(item, id=index, next_sample=forward_item)
             else:
-                for forward_item in forward_generator:
-                    yield str(forward_item) + str(current)
+                yield Sample(current, next_sample=forward_item)
 
-    def render_item(self, item, shuffle=False):
+    def render_item(self, item):
         result = item
 
         if isinstance(item, (list,)):
             result = [
-                self.render_item(v, shuffle=shuffle)
+                self.render_item(v)
                 for v in item
             ]
         elif isinstance(item, (Any,)):
             result = [
-                self.render_item(v, shuffle=shuffle)
+                self.render_item(v)
                 for v in item.values
             ]
         elif isinstance(item, (Call,)):
@@ -50,9 +45,5 @@ class ObjectGraphTemplate(Template):
             result = current_callable()
         elif isinstance(item, Const):
             result = item.value
-
-        if isinstance(result, (list,)):
-            if shuffle:
-                random.shuffle(result)
 
         return result

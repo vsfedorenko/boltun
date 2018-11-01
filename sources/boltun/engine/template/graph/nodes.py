@@ -13,7 +13,7 @@ class Node(with_metaclass(ABCMeta, object)):
 
 @attr.s
 class Any(Node):
-    values = attr.ib(type=list, default=attr.Factory(list))
+    values = attr.ib(type=list, factory=list)
 
     def __call__(self, *args, **kwargs):
         return self.values

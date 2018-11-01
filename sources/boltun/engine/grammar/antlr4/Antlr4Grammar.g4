@@ -360,7 +360,7 @@ self.node_stack.peek().add_child(node)
     LL_CALL_BRACK
     var_optional=QUESTION?
     var_name=NAME
-    (DOT var_method_name=NAME)?
+    (DOT var_ref_names+=NAME)*
     var_optional=QUESTION?
     var_attr=attr
     var_optional=QUESTION?
@@ -369,13 +369,13 @@ self.node_stack.peek().add_child(node)
 {
 
 name=$var_name.text
+ref_names=[v.text for v in $var_ref_names]
 optional=$var_optional is not None
-method=$var_method_name.text
 arg_params = $ctx.var_attr.__data__.get('arg_params', None)
 kwarg_params = $ctx.var_attr.__data__.get('kwarg_params', None)
 
-node = CallNode(name=name, optional=optional,
-                method=method, arg_params=arg_params, kwarg_params=kwarg_params)
+node = CallNode(name=name, ref_names=ref_names, optional=optional,
+                arg_params=arg_params, kwarg_params=kwarg_params)
 
 if $ctx.var_fltr_chain:
     filters = $ctx.var_fltr_chain.__data__.get('filters', None)
@@ -397,7 +397,7 @@ locals [__data__=dict()]
 }
     :
     var_name=NAME
-    (DOT var_method_name=NAME)?
+    (DOT var_ref_names+=NAME)*
     var_optional=QUESTION?
     var_attr=attr?
     var_optional=QUESTION?
@@ -405,7 +405,7 @@ locals [__data__=dict()]
 
 $ctx.__data__ = {
     'name' : $var_name.text,
-    'method': $var_method_name.text,
+    'ref_names': [v.text for v in $var_ref_names],
     'optional': $var_optional is not None,
 
     'arg_params' : $ctx.var_attr.__data__.get('arg_params') \
@@ -439,11 +439,11 @@ filters = []
 for fltr_def in $var_fltrs:
     name = fltr_def.__data__.get('name')
     optional = fltr_def.__data__.get('optional')
-    method = fltr_def.__data__.get('method')
+    ref_names = fltr_def.__data__.get('ref_names')
     arg_params = fltr_def.__data__.get('arg_params')
     kwarg_params = fltr_def.__data__.get('kwarg_params')
 
-    filter_ = NodeFilter(name=name, method=method, optional=optional,
+    filter_ = NodeFilter(name=name, ref_names=ref_names, optional=optional,
                          arg_params=arg_params, kwarg_params=kwarg_params)
     filters.append(filter_)
 

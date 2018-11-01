@@ -15,7 +15,7 @@ class Node(with_metaclass(ABCMeta, object)):
 
 @attr.s
 class FilteredNode(Node):
-    filters = attr.ib(type=list, default=attr.Factory(list), init=False)
+    filters = attr.ib(type=list, factory=list, init=False)
 
     @abstract_method
     def __compile__(self, compiler, environment):

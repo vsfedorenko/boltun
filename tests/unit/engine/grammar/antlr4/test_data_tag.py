@@ -8,7 +8,7 @@ from boltun.engine.grammar.antlr4.node import NodeFilter
 from boltun.engine.grammar.antlr4.node.fork import ContentNode, \
     RootNode
 from boltun.engine.grammar.antlr4.node.leaf import DataNode
-from .base import BaseAntlr4GrammarTestCase
+from ._base import BaseAntlr4GrammarTestCase
 
 
 class TestDataTag(BaseAntlr4GrammarTestCase):
@@ -60,6 +60,23 @@ class TestDataTag(BaseAntlr4GrammarTestCase):
                                     'filter2',
                                     kwarg_params={'kwarg': 'b'}
                                 )
+                            ]
+                        })
+                    ]}),
+                ]})
+        ),
+        (
+                "[[ 'Hello, friend !' | namespace1.namespace2.filter('a') ]]",
+                (RootNode, {'children': [
+                    (ContentNode, {'children': [
+                        (DataNode, {
+                            'content': "Hello, friend !",
+                            'filters': [
+                                NodeFilter(
+                                    'namespace1',
+                                    ref_names=['namespace2', 'filter'],
+                                    arg_params=['a']
+                                ),
                             ]
                         })
                     ]}),

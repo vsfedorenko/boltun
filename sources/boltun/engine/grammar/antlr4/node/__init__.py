@@ -22,10 +22,10 @@ class Node(BaseNode):
 
 @attr.s
 class NodeFilter(BaseFilter):
-    method = attr.ib(type=six.string_types, default=None)
+    ref_names = attr.ib(type=list, factory=list)
     optional = attr.ib(type=bool, default=False)
-    arg_params = attr.ib(type=list, default=attr.Factory(list))
-    kwarg_params = attr.ib(type=dict, default=attr.Factory(dict))
+    arg_params = attr.ib(type=list, factory=list)
+    kwarg_params = attr.ib(type=dict, factory=dict)
 
     def __compile__(self, compiler, environment, values):
         if not isinstance(values, (list,)):
@@ -39,7 +39,8 @@ class NodeFilter(BaseFilter):
             compiler.filter(
                 environment,
                 FilterContext(
-                    name=self.name, value=value, method=self.method,
+                    name=self.name, value=value,
+                    ref_names=self.ref_names,
                     arg_params=self.arg_params,
                     kwarg_params=self.kwarg_params
                 )

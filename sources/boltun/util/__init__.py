@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from .callables import (
     DictRecursiveProcessor, ListRecursionProcessor,
-    RecursionProcessor, recursive_callable
+    RecursionProcessor, recursive
 )
 from .collections import Stack
 from .debug import timed

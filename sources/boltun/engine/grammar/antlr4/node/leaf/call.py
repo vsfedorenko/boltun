@@ -1,24 +1,23 @@
 from __future__ import absolute_import, division, print_function
 
 import attr
-import six
 
 from boltun.engine.grammar.antlr4.node import NodeFilter
 from boltun.engine.grammar.nodes import FunctionNode
 from boltun.engine.template.context import FunctionContext
-from .base import LeafNode
+from ._base import LeafNode
 
 
 @attr.s
 class CallNode(LeafNode, FunctionNode):
     optional = attr.ib(type=bool, default=False)
-    method = attr.ib(type=six.string_types, default=None)
-    arg_params = attr.ib(type=list, default=attr.Factory(list))
-    kwarg_params = attr.ib(type=dict, default=attr.Factory(dict))
+    ref_names = attr.ib(type=list, factory=list)
+    arg_params = attr.ib(type=list, factory=list)
+    kwarg_params = attr.ib(type=dict, factory=dict)
 
     def __compile__(self, compiler, environment):
         function_context = \
-            FunctionContext(self.name, self.method, self.arg_params,
+            FunctionContext(self.name, self.ref_names, self.arg_params,
                             self.kwarg_params)
 
         compiled_function = compiler.function(environment, function_context)

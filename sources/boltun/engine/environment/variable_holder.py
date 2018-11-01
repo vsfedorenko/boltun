@@ -6,7 +6,7 @@ import attr
 @attr.s
 class VariableHolder(object):
     _environment = attr.ib()
-    _items = attr.ib(type=dict, default=attr.Factory(dict), init=False)
+    _items = attr.ib(type=dict, factory=dict, init=False)
 
     def add(self, name, value):
         if name in self._items:

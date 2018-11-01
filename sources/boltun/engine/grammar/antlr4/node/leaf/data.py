@@ -4,7 +4,7 @@ import attr
 import six
 
 from boltun.engine.grammar.nodes import FilteredNode, NodeFilter
-from .base import LeafNode
+from ._base import LeafNode
 
 
 @attr.s

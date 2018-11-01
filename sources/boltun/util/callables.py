@@ -44,8 +44,8 @@ class DictRecursiveProcessor(RecursionProcessor):
         }
 
 
-def recursive_callable(method_or_func=None, value_pos=0, value_key=None,
-                       recursive_iters=None):
+def recursive(method_or_func=None, value_pos=0, value_key=None,
+              recursive_iters=None):
     if recursive_iters is None:
         recursive_iters = [
             ListRecursionProcessor(),

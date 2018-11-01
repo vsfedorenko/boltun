@@ -10,10 +10,24 @@ from six import with_metaclass
 
 @attr.s
 class Sample(object):
-    content = attr.ib()
+    content = attr.ib(type=str, converter=str)
+    id = attr.ib(default=0)
+    next_sample = attr.ib(type='self', default=None)
+
+    def composite_id(self):
+        composite_id = [self.id]
+        if self.next_sample:
+            composite_id.extend(self.next_sample.composite_id())
+        return composite_id
+
+    @next_sample.validator
+    def __validate_child_sample(self, attrib, value):
+        if value is not None and not issubclass(type(value), Sample):
+            raise TypeError("Only Sample and it sub-classes can be a child")
 
     def __str__(self):
-        return self.content
+        child_content = str(self.next_sample) if self.next_sample else ''
+        return self.content + child_content
 
 
 @attr.s

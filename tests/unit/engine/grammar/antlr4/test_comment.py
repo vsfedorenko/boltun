@@ -4,7 +4,7 @@ from parameterized import parameterized
 
 from boltun.engine.grammar.antlr4.node.fork import ContentNode, RootNode
 from boltun.engine.grammar.antlr4.node.leaf import CommentNode
-from .base import BaseAntlr4GrammarTestCase
+from ._base import BaseAntlr4GrammarTestCase
 
 
 class TestDataTag(BaseAntlr4GrammarTestCase):

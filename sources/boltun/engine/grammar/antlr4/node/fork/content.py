@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import attr
 
 from boltun.engine.grammar.antlr4.node.leaf import DataNode
-from .base import ForkNode
+from ._base import ForkNode
 
 
 @attr.s
