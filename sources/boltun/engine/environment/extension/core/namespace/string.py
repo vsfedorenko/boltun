@@ -1,41 +1,45 @@
 from __future__ import absolute_import, division, print_function
 
-from boltun.engine.environment.extension import Namespace, boltun
+from boltun.engine.environment.extension import Namespace, \
+    boltun
+from .json import JsonNamespace
 from boltun.util import recursive
 
 
 class StringNamespace(Namespace):
 
-    @classmethod
-    def __names__(cls):
+    def __names__(self):
         return ['str', 'string']
 
-    @boltun
+    def __namespaces__(self):
+        return [JsonNamespace]
+
+    @boltun(filter=True)
     @recursive
     def lower(self, value):
         return value.lower()
 
-    @boltun
+    @boltun(filter=True)
     @recursive
     def upper(self, value):
         return value.upper()
 
-    @boltun
+    @boltun(filter=True)
     @recursive
     def capitalize(self, value):
         return value.capitalize()
 
-    @boltun
+    @boltun(filter=True)
     @recursive
     def strip(self, value):
         return value.strip()
 
-    @boltun
+    @boltun(filter=True)
     @recursive
     def lstrip(self, value):
         return value.lstrip()
 
-    @boltun
+    @boltun(filter=True)
     @recursive
     def rstrip(self, value):
         return value.rstrip()

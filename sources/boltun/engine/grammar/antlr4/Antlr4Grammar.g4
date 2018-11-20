@@ -221,7 +221,7 @@ node = DataNode(data_str)
 
 // =============================== POLYADIC TAG ===============================
 
-polyadic_tag : choice_tag | choice_short_tag;
+polyadic_tag : choice_tag ;
 
 // ================================= UNARY TAG ================================
 
@@ -252,54 +252,49 @@ self.node_stack.peek().add_child(choice_node)
 }
     :
     LL_BRACE
-    var_content_choises+=content?
+    var_content_choises+=choice_tag_content?
     (
         DOUBLE_PIPE
-        var_content_choises+=content?
+        var_content_choises+=choice_tag_content?
     )*?
     RR_BRACE
 {
 
 } ;
 
-// ============================= CHOICE SHORT TAG =============================
-
-choice_short_tag
+choice_tag_content
 locals []
 @init
 {
 
-self._validate_recognition_mode(Antlr4GrammarMode.CALL)
-
-node = ChoiceNode()
+choice_node_wrapper = ChoiceNode.Wrapper()
+self.node_stack.push(choice_node_wrapper)
 
 }
 @after
 {
 
-node.start = self._get_start_pos($ctx)
-node.stop = self._get_stop_pos($ctx)
-
-for child_node in node.children:
-    if not isinstance(child_node, (DataNode,)):
-        continue
-    child_node.start = node.start
-    child_node.stop = node.stop
-
-self.node_stack.peek().add_child(node)
+choice_node_wrapper = self.node_stack.pop()
+self.node_stack.peek().add_child(choice_node_wrapper)
 
 }
     :
-    LLL_BRACE
-    var_chars+=DATA+
-    RRR_BRACE
+    (
+        (
+            var_keep_ws_left=L_BRACE
+            content
+            var_keep_ws_right=R_BRACE
+        )
+        |
+        content
+    )
 {
 
-for c in $var_chars:
-    node.add_child(DataNode(c.text))
+if ($var_keep_ws_left and $var_keep_ws_right):
+    choice_node_wrapper.keep_ws = True
 
-}
-;
+} ;
+
 // ============================= DATA FILTER TAG ==============================
 
 data_filter_tag
@@ -657,24 +652,18 @@ node.stop = self._get_stop_pos($ctx)
 // ================================ LEXER RULES ===============================
 
 
-LLL_BRACE : '{{{'
-{
-self._open_bracket(current='{{{')
-self._in(state='choice_short')
-} ;
-RRR_BRACE : '}}}'
-{
-self._close_bracket(expected='{{{')
-self._out(state='choice_short')
-} ;
 
-LL_BRACE : '{{'
+LL_BRACE : { self._not(state='choice_keep_ws') \
+              and self._not(state='tag') }?
+           '{{'
 {
 self._open_bracket(current='{{')
 self._in(state='choice')
 } ;
 
-RR_BRACE : '}}'
+RR_BRACE : { self._not(state='choice_keep_ws') \
+              and self._not(state='tag') }?
+           '}}'
 {
 self._close_bracket(expected='{{')
 self._out(state='choice')
@@ -764,19 +753,38 @@ self._close_bracket(expected='[')
 self._out(state='list')
 } ;
 
-BOOL         : {self._is(state='tag') and self._not(state='comment')}?
+L_BRACE : { self._is(state='choice') \
+            and self._not(state='choice_keep_ws') \
+            and self._not(state='tag') }?
+          '{'
+{
+self._open_bracket(current='{')
+self._in(state='choice_keep_ws')
+} ;
+
+R_BRACE : { self._is(state='choice') \
+            and self._is(state='choice_keep_ws') \
+            and self._not(state='tag') }?
+          '}'
+{
+self._close_bracket(expected='{')
+self._out(state='choice_keep_ws')
+} ;
+
+BOOL         : { self._is(state='tag') and self._not(state='comment') }?
                'True' | 'False' ;
 
-NUMBER       : {self._is(state='tag') and self._not(state='comment')}?
+NUMBER       : { self._is(state='tag') and self._not(state='comment') }?
                INT_NUMBER | FLOAT_NUMBER ;
 
-INT_NUMBER   : {self._is(state='tag') and self._not(state='comment')}?
+INT_NUMBER   : { self._is(state='tag') and self._not(state='comment') }?
                ('0'..'9')+ ;
 
-FLOAT_NUMBER : {self._is(state='tag') and self._not(state='comment')}?
+FLOAT_NUMBER : {self._is(state='tag') and self._not(state='comment') }?
                INT_NUMBER+ DOT INT_NUMBER* ;
 
-STRING       : {self._is(state='tag') and self._not(state='comment')}?
+STRING       : { self._is(state='choice') \
+                 or self._is(state='tag') and self._not(state='comment') }?
              (
                 '\'' ( STRING_ESC_SEQ | ~[\\\r\n\f'] )* '\''
                 |
@@ -787,7 +795,8 @@ STRING       : {self._is(state='tag') and self._not(state='comment')}?
 fragment STRING_ESC_SEQ : '\\' . ;
 
 
-WS_SKIP	     : {self._is(state='tag') and self._not(state='comment')}?
+WS_SKIP	     : { self._is(state='tag') \
+                 and self._not(state='comment') }?
                WS+ -> channel(HIDDEN) ;
 
 fragment WS  : '\t' | ' ' | '\r' | '\n'| '\u000C' ;
@@ -807,7 +816,9 @@ fragment NAME_NUMBERS : '0'..'9';
 COMMENT_DATA : {self._is(state='tag') and self._is(state='comment')}? . ;
 DATA         : {self._not(state='tag')}? . ;
 
-DOUBLE_PIPE  : {self._is(state='choice') and self._not(state='tag')}? '||' ;
+DOUBLE_PIPE  : {self._is(state='choice') and self._not(state='tag')}?
+               '||' ;
+
 PIPE         : {self._is(state='tag')}? '|' ;
 SLASH        : {self._is(state='tag')}? '/' ;
 AMP	         : {self._is(state='tag')}? '&' ;

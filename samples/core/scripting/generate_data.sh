@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-python -m boltun "Hello, World!"
+set -ex;
+
+python -m boltun "Hello, {{ Home || World || Day }} !"
+python -m boltun "Welcome, {{ Home || Back }} !"

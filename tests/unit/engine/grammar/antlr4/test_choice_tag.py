@@ -27,6 +27,80 @@ class TestChoiceTag(BaseAntlr4GrammarTestCase):
                 ]})
         ),
         (
+                "{{ Hello ||{  Hi   }}}",
+                (RootNode, {'children': [
+                    (ChoiceNode, {'children': [
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "Hello"})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "  Hi   "})
+                        ]}),
+                    ]})
+                ]})
+        ),
+        (
+                "{{{ Hello }||{  Hi   }}}",
+                (RootNode, {'children': [
+                    (ChoiceNode, {'children': [
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': " Hello "})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "  Hi   "})
+                        ]}),
+                    ]})
+                ]})
+        ),
+        (
+                "{{{ Hello }||{ Aloha  }||  Hi   }}",
+                (RootNode, {'children': [
+                    (ChoiceNode, {'children': [
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': " Hello "})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': " Aloha  "})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "Hi"})
+                        ]}),
+                    ]})
+                ]})
+        ),
+        (
+                "{{ Hello ||{ Aloha  }||  Hi   }}",
+                (RootNode, {'children': [
+                    (ChoiceNode, {'children': [
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "Hello"})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': " Aloha  "})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "Hi"})
+                        ]}),
+                    ]})
+                ]})
+        ),
+        (
+                "{{{ Hello }||{ Aloha  }||{  Hi   }}}",
+                (RootNode, {'children': [
+                    (ChoiceNode, {'children': [
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': " Hello "})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': " Aloha  "})
+                        ]}),
+                        (ContentNode, {'children': [
+                            (DataNode, {'content': "  Hi   "})
+                        ]}),
+                    ]})
+                ]})
+        ),
+        (
                 "{{ Hello || {{ Hi || Aloha }} }}",
                 (RootNode, {'children': [
                     (ChoiceNode, {'children': [

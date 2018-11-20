@@ -28,6 +28,7 @@ class TestEngine(unittest.TestCase):
     ])
     def test_engine_default(self, input_, expected_samples):
         engine = Engine()
+        extensions = engine.default_environment.extensions.get()
 
         samples = engine.render(input_)
         assert samples is not None

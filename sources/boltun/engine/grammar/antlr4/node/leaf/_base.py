@@ -13,6 +13,3 @@ class LeafNode(with_metaclass(ABCMeta, Node)):
 
     def __compile__(self, compiler, environment):
         pass
-
-
-__all__ = ['LeafNode']

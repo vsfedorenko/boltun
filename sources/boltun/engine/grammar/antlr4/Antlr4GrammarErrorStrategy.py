@@ -10,6 +10,3 @@ class Antlr4GrammarErrorStrategy(BailErrorStrategy):
 
     def reportError(self, recognizer, e):
         pass
-
-
-__all__ = ['Antlr4GrammarErrorStrategy']

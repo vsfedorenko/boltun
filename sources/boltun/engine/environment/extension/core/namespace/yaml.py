@@ -3,15 +3,16 @@ from __future__ import absolute_import, division, print_function
 import yaml
 
 from boltun.engine.environment.extension import Namespace, boltun
+from boltun.util import recursive
 
 
 class YamlNamespace(Namespace):
 
-    @classmethod
-    def __names__(cls):
+    def __names__(self):
         return ['yaml']
 
     @boltun
+    @recursive
     def load(self, value):
         return yaml.load(value)
 

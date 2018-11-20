@@ -3,7 +3,6 @@ from __future__ import absolute_import, division, print_function
 from abc import abstractmethod as abstract_method
 
 import attr
-import six
 
 from boltun.engine.grammar.nodes import Node as BaseNode, \
     NodeFilter as BaseFilter

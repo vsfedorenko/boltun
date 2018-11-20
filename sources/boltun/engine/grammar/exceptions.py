@@ -17,6 +17,3 @@ class RecognitionDisabledException(Exception):
 
     def __str__(self):
         return self.message
-
-
-__all__ = ['RecognitionDisabledException']

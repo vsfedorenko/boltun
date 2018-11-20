@@ -53,6 +53,3 @@ class Antlr4Grammar(Grammar):
 
         return Antlr4GrammarResult(node_tree=node_tree,
                                    grammar_tree=grammar_tree)
-
-
-__all__ = ['Antlr4GrammarResult', 'Antlr4Grammar']

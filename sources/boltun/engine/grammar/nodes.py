@@ -59,6 +59,3 @@ class NodeFilter(object):
 
         return NodeFilter.compile_sequence(compiler, environment, filters[1:],
                                            filtered_values)
-
-
-__all__ = ['Node', 'FilteredNode', 'FunctionNode', 'NodeFilter']

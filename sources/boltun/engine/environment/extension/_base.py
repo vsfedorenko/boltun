@@ -22,19 +22,17 @@ class Extension(with_metaclass(ABCMeta, object)):
 @attr.s
 class Namespace(Extension):
 
-    @classmethod
     @abstract_method
-    def __names__(cls):
+    def __names__(self):
         raise NotImplementedError()
 
 
 @attr.s
 class Function(with_metaclass(ABCMeta, object)):
-    _environment = attr.ib()
+    environment = attr.ib()
 
-    @classmethod
     @abstract_method
-    def __names__(cls):
+    def __names__(self):
         raise NotImplementedError()
 
     @abstract_method
@@ -44,11 +42,10 @@ class Function(with_metaclass(ABCMeta, object)):
 
 @attr.s
 class Filter(with_metaclass(ABCMeta, object)):
-    _environment = attr.ib()
+    environment = attr.ib()
 
-    @classmethod
     @abstract_method
-    def __names__(cls):
+    def __names__(self):
         raise NotImplementedError()
 
     @abstract_method
