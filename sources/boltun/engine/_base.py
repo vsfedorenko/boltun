@@ -18,8 +18,7 @@ class Engine(object):
 
     default_environment = attr.ib(type=Environment,
                                   default=attr.Factory(
-                                      Environment, takes_self=True
-                                  ),
+                                      Environment, takes_self=True),
                                   init=False)
 
     def __attrs_post_init__(self):

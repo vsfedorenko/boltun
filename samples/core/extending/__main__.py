@@ -1,11 +1,7 @@
 from boltun.engine import Engine
-from boltun.engine.environment import Extension
+from boltun.engine.environment.extension import Extension, FilterDef, \
+    FunctionDef, boltun
 
-class FilterDef(object):
-    pass
-
-class FunctionDef(object):
-    pass
 
 class CustomExtension(Extension):
 
@@ -22,8 +18,10 @@ class CustomExtension(Extension):
             FilterDef(names=['lower'], callable=self.env_func)
         ]
 
+    @boltun
     def env_func(self):
         pass
+
 
 if __name__ == '__main__':
     engine = Engine()

@@ -25,29 +25,3 @@ class Namespace(Extension):
     @abstract_method
     def __names__(self):
         raise NotImplementedError()
-
-
-@attr.s
-class Function(with_metaclass(ABCMeta, object)):
-    environment = attr.ib()
-
-    @abstract_method
-    def __names__(self):
-        raise NotImplementedError()
-
-    @abstract_method
-    def __execute__(self, *args, **kwargs):
-        raise NotImplementedError()
-
-
-@attr.s
-class Filter(with_metaclass(ABCMeta, object)):
-    environment = attr.ib()
-
-    @abstract_method
-    def __names__(self):
-        raise NotImplementedError()
-
-    @abstract_method
-    def __apply__(self, input_, *args, **kwargs):
-        raise NotImplementedError()

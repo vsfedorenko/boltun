@@ -6,6 +6,11 @@ import attr
 
 @attr.s
 class BoltunContext(object):
+
+    @classmethod
+    def __decorator_attribute__(cls):
+        return "__boltun_context__"
+
     name = attr.ib(type=str, default=None)
     visibility = attr.ib(type=str, default='global')
     function_name = attr.ib(type=str, default=None)
@@ -21,14 +26,14 @@ class BoltunContext(object):
 
 
 def boltun(maybe_target=None, context=None, **kwargs):
-    if not context and kwargs:
+    if not context and not kwargs:
         context = BoltunContext(**kwargs)
 
     def _decorator(target):
-        target.__boltun_context__ = context
-
         def _wrapper(*args, **kwargs):
             return target(*args, **kwargs)
+
+        setattr(_wrapper, BoltunContext.__decorator_attribute__(), context)
 
         return _wrapper
 
@@ -36,5 +41,7 @@ def boltun(maybe_target=None, context=None, **kwargs):
     is_class_ = is_class(maybe_target)
     is_method_ = is_method(maybe_target)
 
-    return _decorator(maybe_target) \
-        if (is_function_ or is_class_ or is_method_) else _decorator
+    decorator = _decorator(maybe_target) if (
+            is_function_ or is_class_ or is_method_) else _decorator
+
+    return decorator

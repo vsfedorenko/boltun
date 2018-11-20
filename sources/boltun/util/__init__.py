@@ -12,5 +12,5 @@ from .iterators import (
     CollectionResettableIterator, Iterator,
     ResettableIterator
 )
-from .reflection import get_class_by_method
+from .reflection import (get_class_by_method, )
 from .registry import Registry
