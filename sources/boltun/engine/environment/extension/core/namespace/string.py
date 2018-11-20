@@ -2,8 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from boltun.engine.environment.extension import Namespace, \
     boltun
-from .json import JsonNamespace
 from boltun.util import recursive
+from .json import JsonNamespace
 
 
 class StringNamespace(Namespace):

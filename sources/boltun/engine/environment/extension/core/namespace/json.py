@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 import json
 
 from boltun.engine.environment.extension import Namespace, boltun
-from .yaml import YamlNamespace
 from boltun.util import recursive
+from .yaml import YamlNamespace
 
 
 class JsonNamespace(Namespace):

@@ -14,7 +14,7 @@ class RecursionProcessor(with_metaclass(ABCMeta, object)):
         raise NotImplementedError()
 
     @abstract_method
-    def apply(self, callable_instance, value, *args, **kwargs):
+    def apply(self, callable_instance_wrapper, value, *args, **kwargs):
         raise NotImplementedError()
 
 
