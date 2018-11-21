@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+/.logs/
 .tests-reports
 
 ### Windows template

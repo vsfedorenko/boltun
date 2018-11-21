@@ -1,11 +1,36 @@
-from os.path import dirname, join
+import io
+from os.path import abspath, dirname, join
+from shutil import rmtree
 
 from setuptools import find_packages, setup
 
+root_dir = abspath(dirname(__file__))
+
+dist_dir = join(root_dir, 'dist')
+build_dir = join(root_dir, 'build')
+
+sources_dir = join(root_dir, 'sources')
+package_dir = join(sources_dir, 'boltun')
+
+
+def cleanup():
+    rmtree(build_dir, ignore_errors=True)
+    rmtree(dist_dir, ignore_errors=True)
+
+
+def get_about():
+    with io.open(join(package_dir, '__about__.py'), encoding='utf-8') as f:
+        about = {}
+        exec (f.read(), about)
+    return about
+
 
 def setup_package():
+    cleanup()
+
+    about = get_about()
+
     setup(
-        name="boltun",
         packages=find_packages('sources'),
         package_dir={'': 'sources'},
 
@@ -23,16 +48,13 @@ def setup_package():
         tests_require=['pytest'],
         test_suite='tests',
 
-        version="1.0.0",
-        author="meiblorn",
-        license="MIT",
-        url="https://github.com/meiblorn/boltun",
-        description="Massive datasets generator",
-        long_description=open(join(dirname(__file__), "readme.md")).read(),
-        long_description_content_type="text/markdown",
+        name=about['__title__'],
+        description=about['__summary__'],
+        author=about['__author__'],
+        author_email=about['__email__'],
+        url=about['__uri__'],
+        license=about['__license__'],
 
-
-        scripts=['bin/boltun'],
         classifiers=[
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7',
