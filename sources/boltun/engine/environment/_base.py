@@ -4,106 +4,95 @@ import inspect
 
 import attr
 
-from boltun.engine.environment.extension import BoltunContext, Extension, \
-    FilterDef, FunctionDef, Namespace
+from boltun.engine.environment.extension import Extension
+from boltun.engine.environment.mapping import MappingType
+from boltun.engine.environment.mapping.definition import \
+    FilterDefinitionMappingResolver, FunctionDefinitionMappingResolver
 
 
 @attr.s
 class Environment(object):
     engine = attr.ib()
 
-    extensions = attr.ib(type=dict, factory=dict, init=False)
-    functions = attr.ib(type=dict, factory=dict, init=False)
-    filters = attr.ib(type=dict, factory=dict, init=False)
-    variables = attr.ib(type=dict, factory=dict, init=False)
+    extensions = attr.ib(type=dict, factory=dict)
+    functions = attr.ib(type=dict, factory=dict)
+    filters = attr.ib(type=dict, factory=dict)
+    variables = attr.ib(type=dict, factory=dict)
+
+    _mapping_resolvers = attr.ib(type=list, init=False)
+
+    @_mapping_resolvers.default
+    def __init_mapping_resolvers__(self):
+        return [
+            FunctionDefinitionMappingResolver(),
+            FilterDefinitionMappingResolver()
+        ]
 
     def add_extension(self, maybe_extension):
         extension = maybe_extension() \
             if inspect.isclass(maybe_extension) else maybe_extension
 
-        if not isinstance(extension, Extension):
-            raise ValueError("Undefined values was passed as Extension")
+        if not issubclass(extension.__class__, Extension):
+            raise ValueError("Undefined value was passed as an Extension")
 
-        for namespace in extension.__namespaces__():
-            self._add_namespace(namespace)
+        mappings = self._get_mappings(extension)
+        for mapping in mappings:
+            self._apply_mapping(mapping)
 
-        decorated_members = self.__get_decorated_methods(extension)
-        for member in decorated_members:
-            print(member)
-
-        for function_ in extension.__functions__():
-            self.add_function(function_)
-
-        for filter_ in extension.__filters__():
-            self.add_filter(filter_)
-
-        self.extensions[type(extension)] = extension
+        self.extensions[extension.__boltun_name__()] = extension
 
     def get_extensions(self):
-        return dict(self.extensions)
+        return self.extensions.copy()
 
-    def get_extension(self, extension_type):
-        return self.extensions[extension_type]
-
-    def add_function(self, function_):
-        if isinstance(function_, FunctionDef):
-            pass
-        return
+    def get_extension(self, extension_name):
+        return self.extensions[extension_name]
 
     def get_functions(self):
-        pass
+        return self.functions.copy()
 
     def get_function(self, name):
-        pass
-
-    def add_filter(self, filter_):
-        if isinstance(filter_, FilterDef):
-            pass
-        return
+        return self.functions[name]
 
     def get_filters(self):
-        pass
+        return self.filters.copy()
 
     def get_filter(self, name):
-        pass
+        return self.filters[name]
 
     def set_variable(self, name, value):
-        pass
+        self.variables[name] = value
+        return value
 
     def get_variable(self, name):
-        pass
+        return self.variables[name]
 
     def del_variable(self, name):
-        pass
+        del self.variables[name]
 
-    def _add_namespace(self, maybe_namespace, name_prefix=None):
-        namespace = maybe_namespace() \
-            if inspect.isclass(maybe_namespace) else maybe_namespace
+    def _get_mappings(self, extension):
+        mappings = []
 
-        if not isinstance(namespace, Namespace):
-            raise ValueError("Undefined values was passed as Namespace")
+        candidates = []
+        candidates.extend(extension.__boltun_function_definitions__())
+        candidates.extend(extension.__boltun_filters_definitions__())
 
-        names = namespace.__names__()
+        for candidate in candidates:
+            for resolver in self._mapping_resolvers:
+                if not resolver.__accepts__(candidate):
+                    continue
+                mappings.extend(resolver.__apply__(candidate))
+                break
 
-        for sub_namespace in namespace.__namespaces__():
-            self._add_namespace(sub_namespace, name_prefix=names)
+        return mappings
 
-        for function_ in namespace.__functions__():
-            self.add_function(function_)
+    def _apply_mapping(self, mapping):
+        mapping_type = mapping.type
 
-        for filter_ in namespace.__filters__():
-            self.add_filter(filter_)
+        if mapping_type == MappingType.FUNCTION:
+            holder = self.functions
+        elif mapping_type == MappingType.FILTER:
+            holder = self.filters
+        else:
+            raise ValueError("Undefined mapping type")
 
-    @classmethod
-    def __get_decorated_methods(cls, target):
-        decorator_attribute = BoltunContext.__decorator_attribute__()
-
-        for member in inspect.getmembers(target.__class__, inspect.ismethod):
-            method = member[1]
-
-            if hasattr(method, decorator_attribute):
-                context = getattr(method, decorator_attribute)
-
-                yield method, context
-            else:
-                continue
+        holder[mapping.name] = mapping.callable

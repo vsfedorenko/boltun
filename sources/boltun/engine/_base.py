@@ -16,19 +16,13 @@ class Engine(object):
     compiler = attr.ib(type=Compiler,
                        default=attr.Factory(ObjectGraphCompiler))
 
-    default_environment = attr.ib(type=Environment,
-                                  default=attr.Factory(
-                                      Environment, takes_self=True),
-                                  init=False)
+    environment = attr.ib(type=Environment,
+                          default=attr.Factory(
+                              Environment, takes_self=True),
+                          init=False)
 
     def __attrs_post_init__(self):
-        self.default_environment.add_extension(CoreExtension())
-
-    def get_default_environment(self):
-        return self.default_environment
-
-    def create_environment(self):
-        return Environment(self)
+        self.environment.add_extension(CoreExtension())
 
     def create_template(self, input_str):
         grammar_parse_result = self.grammar.parse(input_str)
@@ -37,12 +31,9 @@ class Engine(object):
 
         template = \
             self.compiler.__template__(grammar_node_tree=node_tree,
-                                       environment=self.default_environment)
+                                       environment=self.environment)
         return template
 
     def render(self, input_str):
         template = self.create_template(input_str)
         return template.render()
-
-    def register(self, maybe_target=None, context=None):
-        return self.default_environment.register(maybe_target, context)

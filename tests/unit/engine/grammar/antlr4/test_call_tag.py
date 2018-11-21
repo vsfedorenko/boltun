@@ -27,38 +27,6 @@ class TestCallTag(BaseAntlr4GrammarTestCase):
                 ]})
         ),
         (
-                "[% env.get('JAVA_HOME') %]",
-
-                (RootNode, {'children': [
-                    (ContentNode, {'children': [
-                        (
-                                CallNode,
-                                {
-                                    'name': "env",
-                                    'ref_names': ['get'],
-                                    'arg_params': ['JAVA_HOME']
-                                }
-                        )
-                    ]}),
-                ]})
-        ),
-        (
-                "[% namespace1.namespace2.get('ARG') %]",
-
-                (RootNode, {'children': [
-                    (ContentNode, {'children': [
-                        (
-                                CallNode,
-                                {
-                                    'name': "namespace1",
-                                    'ref_names': ['namespace2', 'get'],
-                                    'arg_params': ['ARG']
-                                }
-                        )
-                    ]}),
-                ]})
-        ),
-        (
                 "[% env('PATH') %] [% print('Hello') %]",
 
                 (RootNode, {'children': [
@@ -99,25 +67,6 @@ class TestCallTag(BaseAntlr4GrammarTestCase):
                                     'filter2',
                                     kwarg_params={'kwarg': 'b'}
                                 )
-                            ]
-                        })
-                    ]}),
-                ]})
-        ),
-        (
-                "[% env('JAVA_HOME') | namespace1.namespace2.filter('a') %]",
-
-                (RootNode, {'children': [
-                    (ContentNode, {'children': [
-                        (CallNode, {
-                            'name': "env",
-                            'arg_params': ['JAVA_HOME'],
-                            'filters': [
-                                NodeFilter(
-                                    'namespace1',
-                                    ref_names=['namespace2', 'filter'],
-                                    arg_params=['a']
-                                ),
                             ]
                         })
                     ]}),

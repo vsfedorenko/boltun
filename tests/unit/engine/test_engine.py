@@ -4,31 +4,29 @@ import unittest
 from parameterized import parameterized
 
 from boltun.engine import Engine
-from boltun.engine.template import Sample
 
 
 class TestEngine(unittest.TestCase):
 
     @parameterized.expand([
-        # ("Hello", [Sample("Hello")]),
-        # ("Hello, World !", [Sample("Hello, World !")]),
+        ("Hello", ["Hello"]),
+        ("Hello, World !", ["Hello, World !"]),
         ("Hello, {{ World || Me }} !", [
-            Sample("Hello, World !"),
-            Sample("Hello, Me !")
+            "Hello, World !",
+            "Hello, Me !"
         ]),
-        # ("Hello, {{ Mike || John || Adella }}, how are you ?", [
-        #     Sample("Hello, Mike !"),
-        #     Sample("Hello, John !"),
-        #     Sample("Hello, Adella !")
-        # ]),
-        # ("Hello, [[ what the weather | str.upper? ]] outside ??", [
-        #     Sample("Hello, what the weather outside ??"),
-        #     Sample("Hello, WHAT THE WEATHER outside ??")
-        # ])
+        ("Hello, {{ Mike || John || Adella }}, how are you ?", [
+            "Hello, Mike, how are you ?",
+            "Hello, John, how are you ?",
+            "Hello, Adella, how are you ?"
+        ]),
+        ("Hello, [[ 'what the weather' | upper? ]] outside ??", [
+            "Hello, what the weather outside ??",
+            "Hello, WHAT THE WEATHER outside ??"
+        ])
     ])
-    def test_engine_default(self, input_, expected_samples):
+    def test_engine_default(self, input_, expected_strings):
         engine = Engine()
-        extensions = engine.default_environment.extensions.get()
 
         samples = engine.render(input_)
         assert samples is not None
@@ -37,9 +35,9 @@ class TestEngine(unittest.TestCase):
         samples_list = list(samples)
         samples_list_len = len(samples_list)
         assert samples_list_len != 0
-        assert samples_list_len == len(expected_samples)
-        # for actual, expected in zip(samples_list, expected_samples):
-        #     assert actual == expected
+        assert samples_list_len == len(expected_strings)
+        for actual, expected in zip(samples_list, expected_strings):
+            assert str(actual) == expected
 
 
 if __name__ == '__main__':

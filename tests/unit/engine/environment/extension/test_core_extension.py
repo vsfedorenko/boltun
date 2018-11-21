@@ -2,13 +2,13 @@ import unittest
 
 from parameterized import parameterized
 
-from boltun.engine.environment.extension.core import StringNamespace
+from boltun.engine.environment.extension.core import CoreExtension
 
 
-class TestStringNamespace(unittest.TestCase):
+class TestCoreExtension(unittest.TestCase):
 
-    def setup_method(self, method):
-        self.namespace = StringNamespace()
+    def setUp(self):
+        self.extension = CoreExtension()
 
     @parameterized.expand([
         ('Hello', 'hello'),
@@ -29,7 +29,7 @@ class TestStringNamespace(unittest.TestCase):
         ),
     ])
     def test_lower(self, actual, expected):
-        assert self.namespace.lower(actual) == expected
+        assert self.extension.lower(actual) == expected
 
     @parameterized.expand([
         ('Hello', 'HELLO'),
@@ -50,7 +50,7 @@ class TestStringNamespace(unittest.TestCase):
         ),
     ])
     def test_upper(self, actual, expected):
-        assert self.namespace.upper(actual) == expected
+        assert self.extension.upper(actual) == expected
 
     @parameterized.expand([
         ('HeLlo', 'Hello'),
@@ -71,7 +71,7 @@ class TestStringNamespace(unittest.TestCase):
         ),
     ])
     def test_capitalize(self, actual, expected):
-        assert self.namespace.capitalize(actual) == expected
+        assert self.extension.capitalize(actual) == expected
 
     @parameterized.expand([
         ('   Hello  ', 'Hello'),
@@ -92,7 +92,7 @@ class TestStringNamespace(unittest.TestCase):
         ),
     ])
     def test_strip(self, actual, expected):
-        assert self.namespace.strip(actual) == expected
+        assert self.extension.strip(actual) == expected
 
     @parameterized.expand([
         ('   Hello  ', 'Hello  '),
@@ -116,7 +116,7 @@ class TestStringNamespace(unittest.TestCase):
         ),
     ])
     def test_lstrip(self, actual, expected):
-        assert self.namespace.lstrip(actual) == expected
+        assert self.extension.lstrip(actual) == expected
 
     @parameterized.expand([
         ('   Hello  ', '   Hello'),
@@ -140,7 +140,7 @@ class TestStringNamespace(unittest.TestCase):
         ),
     ])
     def test_rstrip(self, actual, expected):
-        assert self.namespace.rstrip(actual) == expected
+        assert self.extension.rstrip(actual) == expected
 
 
 if __name__ == '__main__':

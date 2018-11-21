@@ -9,19 +9,12 @@ from six import with_metaclass
 @attr.s
 class Extension(with_metaclass(ABCMeta, object)):
 
-    def __namespaces__(self):
-        return []
-
-    def __functions__(self):
-        return []
-
-    def __filters__(self):
-        return []
-
-
-@attr.s
-class Namespace(Extension):
-
     @abstract_method
-    def __names__(self):
+    def __boltun_name__(self):
         raise NotImplementedError()
+
+    def __boltun_function_definitions__(self):
+        return []
+
+    def __boltun_filters_definitions__(self):
+        return []

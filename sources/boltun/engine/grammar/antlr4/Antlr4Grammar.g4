@@ -175,6 +175,7 @@ self.node_stack.push(content_node)
 {
 
 content_node = self.node_stack.pop()
+
 content_node.start = self._get_start_pos($ctx)
 content_node.stop = self._get_stop_pos($ctx)
 
@@ -183,7 +184,7 @@ self.node_stack.peek().add_child(content_node)
 }
     :
     (
-        polyadic_tag
+        choice_tag
         |
         unary_tag
         |
@@ -256,7 +257,7 @@ self.node_stack.peek().add_child(choice_node)
     (
         DOUBLE_PIPE
         var_content_choises+=choice_tag_content?
-    )*?
+    )+
     RR_BRACE
 {
 
@@ -266,32 +267,15 @@ choice_tag_content
 locals []
 @init
 {
-
-choice_node_wrapper = ChoiceNode.Wrapper()
-self.node_stack.push(choice_node_wrapper)
-
 }
 @after
 {
-
-choice_node_wrapper = self.node_stack.pop()
-self.node_stack.peek().add_child(choice_node_wrapper)
-
 }
     :
     (
-        (
-            var_keep_ws_left=L_BRACE
-            content
-            var_keep_ws_right=R_BRACE
-        )
-        |
         content
     )
 {
-
-if ($var_keep_ws_left and $var_keep_ws_right):
-    choice_node_wrapper.keep_ws = True
 
 } ;
 
@@ -355,7 +339,6 @@ self.node_stack.peek().add_child(node)
     LL_CALL_BRACK
     var_optional=QUESTION?
     var_name=NAME
-    (DOT var_ref_names+=NAME)*
     var_optional=QUESTION?
     var_attr=attr
     var_optional=QUESTION?
@@ -364,12 +347,11 @@ self.node_stack.peek().add_child(node)
 {
 
 name=$var_name.text
-ref_names=[v.text for v in $var_ref_names]
 optional=$var_optional is not None
 arg_params = $ctx.var_attr.__data__.get('arg_params', None)
 kwarg_params = $ctx.var_attr.__data__.get('kwarg_params', None)
 
-node = CallNode(name=name, ref_names=ref_names, optional=optional,
+node = CallNode(name=name, optional=optional,
                 arg_params=arg_params, kwarg_params=kwarg_params)
 
 if $ctx.var_fltr_chain:
@@ -392,7 +374,6 @@ locals [__data__=dict()]
 }
     :
     var_name=NAME
-    (DOT var_ref_names+=NAME)*
     var_optional=QUESTION?
     var_attr=attr?
     var_optional=QUESTION?
@@ -400,7 +381,6 @@ locals [__data__=dict()]
 
 $ctx.__data__ = {
     'name' : $var_name.text,
-    'ref_names': [v.text for v in $var_ref_names],
     'optional': $var_optional is not None,
 
     'arg_params' : $ctx.var_attr.__data__.get('arg_params') \
@@ -434,11 +414,10 @@ filters = []
 for fltr_def in $var_fltrs:
     name = fltr_def.__data__.get('name')
     optional = fltr_def.__data__.get('optional')
-    ref_names = fltr_def.__data__.get('ref_names')
     arg_params = fltr_def.__data__.get('arg_params')
     kwarg_params = fltr_def.__data__.get('kwarg_params')
 
-    filter_ = NodeFilter(name=name, ref_names=ref_names, optional=optional,
+    filter_ = NodeFilter(name=name, optional=optional,
                          arg_params=arg_params, kwarg_params=kwarg_params)
     filters.append(filter_)
 
@@ -636,8 +615,7 @@ self.node_stack.peek().add_child(node)
     RR_COMMENT_BRACK
 {
 
-content = ''.join([c.text for c in $var_chars]) \
-                        if $var_chars else None
+content = ''.join([c.text for c in $var_chars]) if $var_chars else None
 
 $ctx.__data__ = {
     'content' : content
@@ -654,7 +632,7 @@ node.stop = self._get_stop_pos($ctx)
 
 
 LL_BRACE : { self._not(state='choice_keep_ws') \
-              and self._not(state='tag') }?
+                and self._not(state='tag') }?
            '{{'
 {
 self._open_bracket(current='{{')
@@ -662,7 +640,7 @@ self._in(state='choice')
 } ;
 
 RR_BRACE : { self._not(state='choice_keep_ws') \
-              and self._not(state='tag') }?
+                and self._not(state='tag') }?
            '}}'
 {
 self._close_bracket(expected='{{')
@@ -670,9 +648,9 @@ self._out(state='choice')
 } ;
 
 LL_TEXT_BRACK : { self._not(state='tag') \
-                  and self._not(state='attr') \
-                  and self._not(state='list') \
-                  and self._not(state='comment') }?
+                    and self._not(state='attr') \
+                    and self._not(state='list') \
+                    and self._not(state='comment') }?
                 '[['
 {
 self._open_bracket(current='[[')
@@ -680,9 +658,9 @@ self._in(state='tag')
 } ;
 
 RR_TEXT_BRACK : { self._is(state='tag') \
-                  and self._not(state='comment') \
-                  and self._not(state='attr') \
-                  and self._not(state='list') }?
+                    and self._not(state='comment') \
+                    and self._not(state='attr') \
+                    and self._not(state='list') }?
                 ']]'
 {
 self._close_bracket(expected='[[')
@@ -690,7 +668,7 @@ self._out(state='tag')
 } ;
 
 LL_CALL_BRACK : { self._not(state='tag') \
-                  and self._not(state='comment') }?
+                    and self._not(state='comment') }?
                 '[%'
 {
 self._open_bracket(current='[[')
@@ -698,7 +676,7 @@ self._in(state='tag')
 } ;
 
 RR_CALL_BRACK : { self._is(state='tag') \
-                  and self._not(state='comment') }?
+                    and self._not(state='comment') }?
                 '%]'
 {
 self._close_bracket(expected='[[')
@@ -706,7 +684,7 @@ self._out(state='tag')
 } ;
 
 LL_COMMENT_BRACK : { self._not(state='tag') \
-                     and self._not(state='comment') }?
+                        and self._not(state='comment') }?
                    '[#'
 {
 self._open_bracket(current='[[')
@@ -715,7 +693,7 @@ self._in(state='comment')
 } ;
 
 RR_COMMENT_BRACK : { self._is(state='tag') \
-                     and self._is(state='comment') }?
+                        and self._is(state='comment') }?
                    '#]'
 {
 self._close_bracket(expected='[[')
@@ -738,7 +716,7 @@ self._out(state='attr')
 } ;
 
 L_BRACK : { self._is(state='attr') \
-            and self._not(state='comment') }?
+                and self._not(state='comment') }?
           '['
 {
 self._open_bracket(current='[')
@@ -746,7 +724,7 @@ self._in(state='list')
 } ;
 
 R_BRACK : { self._is(state='attr') \
-            and self._not(state='comment') }?
+                and self._not(state='comment') }?
           ']'
 {
 self._close_bracket(expected='[')
@@ -754,8 +732,8 @@ self._out(state='list')
 } ;
 
 L_BRACE : { self._is(state='choice') \
-            and self._not(state='choice_keep_ws') \
-            and self._not(state='tag') }?
+                and self._not(state='choice_keep_ws') \
+                and self._not(state='tag') }?
           '{'
 {
 self._open_bracket(current='{')
@@ -763,8 +741,8 @@ self._in(state='choice_keep_ws')
 } ;
 
 R_BRACE : { self._is(state='choice') \
-            and self._is(state='choice_keep_ws') \
-            and self._not(state='tag') }?
+                and self._is(state='choice_keep_ws') \
+                and self._not(state='tag') }?
           '}'
 {
 self._close_bracket(expected='{')
@@ -795,11 +773,9 @@ STRING       : { self._is(state='choice') \
 fragment STRING_ESC_SEQ : '\\' . ;
 
 
-WS_SKIP	     : { self._is(state='tag') \
-                 and self._not(state='comment') }?
-               WS+ -> channel(HIDDEN) ;
+DATA         : {self._not(state='tag')}? . ;
+COMMENT_DATA : {self._is(state='tag') and self._is(state='comment')}? . ;
 
-fragment WS  : '\t' | ' ' | '\r' | '\n'| '\u000C' ;
 
 NAME         : {self._is(state='tag') and self._not(state='comment')}?
                NAME_LETTERS+
@@ -811,10 +787,6 @@ NAME         : {self._is(state='tag') and self._not(state='comment')}?
                ;
 fragment NAME_LETTERS : 'a'..'z' | 'A'..'Z' | '_' | '-';
 fragment NAME_NUMBERS : '0'..'9';
-
-
-COMMENT_DATA : {self._is(state='tag') and self._is(state='comment')}? . ;
-DATA         : {self._not(state='tag')}? . ;
 
 DOUBLE_PIPE  : {self._is(state='choice') and self._not(state='tag')}?
                '||' ;
@@ -833,5 +805,10 @@ PERCENT      : {self._is(state='tag')}? '%' ;
 TILDA        : {self._is(state='tag')}? '~' ;
 COMMAT       : {self._is(state='tag')}? '@' ;
 QUESTION     : {self._is(state='tag')}? '?' ;
+
+WS_SKIP	     : { self._is(state='tag') and self._not(state='comment') }?
+               WS+ -> channel(HIDDEN) ;
+
+WS  : '\t' | ' ' | '\r' | '\n'| '\u000C' ;
 
 UNKNOWN      : . ;

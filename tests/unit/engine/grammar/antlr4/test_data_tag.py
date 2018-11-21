@@ -64,23 +64,6 @@ class TestDataTag(BaseAntlr4GrammarTestCase):
                         })
                     ]}),
                 ]})
-        ),
-        (
-                "[[ 'Hello, friend !' | namespace1.namespace2.filter('a') ]]",
-                (RootNode, {'children': [
-                    (ContentNode, {'children': [
-                        (DataNode, {
-                            'content': "Hello, friend !",
-                            'filters': [
-                                NodeFilter(
-                                    'namespace1',
-                                    ref_names=['namespace2', 'filter'],
-                                    arg_params=['a']
-                                ),
-                            ]
-                        })
-                    ]}),
-                ]})
         )
     ])
     def test_data_tag(self, text, expected_tree):

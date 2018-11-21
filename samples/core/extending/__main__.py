@@ -1,29 +1,30 @@
 from boltun.engine import Engine
-from boltun.engine.environment.extension import Extension, FilterDef, \
-    FunctionDef, boltun
+from boltun.engine.environment.extension import Extension
+from boltun.engine.environment.mapping import FunctionDef
 
 
 class CustomExtension(Extension):
 
-    def __namespaces__(self):
-        return []
+    def __boltun_name__(self):
+        return 'custom'
 
-    def __functions__(self):
+    def __boltun_function_definitions__(self):
         return [
-            FunctionDef(names=['env'], callable=self.env_func)
+            FunctionDef(name='custom', callable=self.custom_func)
         ]
 
-    def __filters__(self):
-        return [
-            FilterDef(names=['lower'], callable=self.env_func)
-        ]
-
-    @boltun
-    def env_func(self):
-        pass
+    # noinspection PyMethodMayBeStatic
+    def custom_func(self, value1, value2):
+        return str(value1) + " -+- " + str(value2)
 
 
 if __name__ == '__main__':
     engine = Engine()
-    environment = engine.get_default_environment()
-    environment.add_extension(CustomExtension())
+    engine.environment.add_extension(CustomExtension())
+    result = engine.render(
+        "[% custom('Hello', 1) %], human, "
+        "{{ how are you ? || you are awesome ! }}"
+    )
+
+    for x in list(map(lambda s: str(s), result)):
+        print(x)
