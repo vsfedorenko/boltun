@@ -28,3 +28,7 @@ if __name__ == '__main__':
 
     for x in list(map(lambda s: str(s), result)):
         print(x)
+
+    # Prints:
+    # Hello -+- 1, human, how are you ?
+    # Hello -+- 1, human, you are awesome !

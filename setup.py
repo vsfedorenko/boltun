@@ -27,7 +27,7 @@ def setup_package():
         author="meiblorn",
         license="MIT",
         url="https://github.com/meiblorn/boltun",
-        description="NLU datasets generator",
+        description="Massive datasets generator",
         long_description=open(join(dirname(__file__), "readme.md")).read(),
         long_description_content_type="text/markdown",
 
