@@ -19,6 +19,9 @@ class DataNode(LeafNode, FilteredNode):
             NodeFilter.compile_sequence(
                 compiler, environment, self.filters, text)
 
+        if self.optional:
+            filtered_text = compiler.optional(filtered_text)
+
         return filtered_text
 
     def is_space(self):

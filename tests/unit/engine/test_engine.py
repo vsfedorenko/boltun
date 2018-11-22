@@ -21,9 +21,39 @@ class TestEngine(unittest.TestCase):
             "Hello, Adella, how are you ?"
         ]),
         ("Hello, [[ 'what the weather' | upper? ]] outside ??", [
+            "Hello, WHAT THE WEATHER outside ??",
             "Hello, what the weather outside ??",
-            "Hello, WHAT THE WEATHER outside ??"
-        ])
+        ]),
+        ("[% range(2, 5) %] apples", [
+            "2 apples",
+            "3 apples",
+            "4 apples",
+        ]),
+        ("[% range(2, 5) %] {{ apples || [[ 'bananas' | upper? ]] }}", [
+            "2 apples", "3 apples", "4 apples",
+            "2 BANANAS", "3 BANANAS", "4 BANANAS",
+            "2 bananas", "3 bananas", "4 bananas",
+        ]),
+        ("[% echo('[1, 2, 3, 4, 5]') | list %]", [
+            '1', '2', '3', '4', '5'
+        ]),
+        ("[% echo('[\\'1\\', \\'2\\', \\'3\\', \\'4\\']') | list %]", [
+            '1', '2', '3', '4'
+        ]),
+        ("[[? 'Sun' ]]", [
+            "Sun",
+            ""
+        ]),
+        ("[[? 'Sunny ' ]]{{ day || night }}", [
+            "Sunny day",
+            "day",
+            "Sunny night",
+            "night",
+        ]),
+        ("[% list('a', 'b', 'c', ['d', 'e']) | upper? %]", [
+            'A', 'B', 'C', 'D', 'E',
+            'a', 'b', 'c', 'd', 'e',
+        ]),
     ])
     def test_engine_default(self, input_, expected_strings):
         engine = Engine()

@@ -12,6 +12,15 @@ class Node(with_metaclass(ABCMeta, object)):
 
 
 @attr.s
+class Optional(Node):
+    value = attr.ib()
+    alternative = attr.ib(default=None)
+
+    def __call__(self, *args, **kwargs):
+        return [self.value, self.alternative]
+
+
+@attr.s
 class Any(Node):
     values = attr.ib(type=list, factory=list)
 

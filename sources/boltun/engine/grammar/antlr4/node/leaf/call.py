@@ -11,14 +11,12 @@ from ._base import LeafNode
 @attr.s
 class CallNode(LeafNode, FunctionNode):
     optional = attr.ib(type=bool, default=False)
-    ref_names = attr.ib(type=list, factory=list)
     arg_params = attr.ib(type=list, factory=list)
     kwarg_params = attr.ib(type=dict, factory=dict)
 
     def __compile__(self, compiler, environment):
         function_context = \
-            FunctionContext(self.name, self.ref_names, self.arg_params,
-                            self.kwarg_params)
+            FunctionContext(self.name, self.arg_params, self.kwarg_params)
 
         compiled_function = compiler.function(environment, function_context)
 
@@ -27,8 +25,6 @@ class CallNode(LeafNode, FunctionNode):
                                         compiled_function)
 
         if self.optional:
-            if not isinstance(compiled_function, list):
-                compiled_function = [compiled_function]
-            compiled_function.append(None)
+            compiled_function = compiler.optional(compiled_function)
 
         return compiled_function

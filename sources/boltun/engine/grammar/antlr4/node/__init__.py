@@ -31,22 +31,21 @@ class NodeFilter(BaseFilter):
             values = [values]
 
         filtered_values = []
-        if self.optional:
-            filtered_values.extend(values)
 
         filtered_values.extend([
             compiler.filter(
                 environment,
                 FilterContext(
                     name=self.name, value=value,
-                    ref_names=self.ref_names,
                     arg_params=self.arg_params,
                     kwarg_params=self.kwarg_params
                 )
             )
-
             if value is not None else None
             for value in values
         ])
+
+        if self.optional:
+            filtered_values = compiler.optional(filtered_values, values)
 
         return filtered_values

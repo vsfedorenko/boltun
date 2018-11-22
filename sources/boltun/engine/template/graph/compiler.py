@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import attr
 
 from boltun.engine.template import Compiler
-from .nodes import Any, Call, Const
+from .nodes import Any, Call, Const, Optional
 from .template import ObjectGraphTemplate
 
 
@@ -72,3 +72,6 @@ class ObjectGraphCompiler(Compiler):
             raise ValueError("Choices count must be greater or equal 2")
 
         return Any(choices)
+
+    def optional(self, value, alternative=None):
+        return Optional(value, alternative)

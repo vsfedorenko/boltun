@@ -301,7 +301,6 @@ self.node_stack.peek().add_child(node)
     LL_TEXT_BRACK
     var_optional=QUESTION?
     var_data=STRING?
-    var_optional=QUESTION?
     (PIPE var_fltr_chain=fltr_chain)?
     RR_TEXT_BRACK
 {
@@ -339,9 +338,7 @@ self.node_stack.peek().add_child(node)
     LL_CALL_BRACK
     var_optional=QUESTION?
     var_name=NAME
-    var_optional=QUESTION?
     var_attr=attr
-    var_optional=QUESTION?
     (PIPE var_fltr_chain=fltr_chain)?
     RR_CALL_BRACK
 {
@@ -376,7 +373,6 @@ locals [__data__=dict()]
     var_name=NAME
     var_optional=QUESTION?
     var_attr=attr?
-    var_optional=QUESTION?
 {
 
 $ctx.__data__ = {

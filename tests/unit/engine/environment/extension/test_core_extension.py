@@ -142,6 +142,29 @@ class TestCoreExtension(unittest.TestCase):
     def test_rstrip(self, actual, expected):
         assert self.extension.rstrip(actual) == expected
 
+    @parameterized.expand([
+        (['?', 5], '?????'),
+        (['?', [1, 3]], ['?', '???']),
+        (['?', [1, 3, 5]], ['?', '???', '?????'])
+    ])
+    def test_repeat(self, actual, expected):
+        assert self.extension.repeat(*actual) == expected
+
+    @parameterized.expand([
+        ('[1, 2, 3]', [1, 2, 3]),
+        ('[1, 2.0, 3]', [1, 2.0, 3]),
+        ('[1, 2.0, "str"]', [1, 2.0, "str"]),
+    ])
+    def test_list(self, actual, expected):
+        assert self.extension.list(actual) == expected
+
+    @parameterized.expand([
+        ('{"a": 1 }', {'a': 1}),
+        ('{"a": 1, "b": [1, 2]}', {'a': 1, 'b': [1, 2]}),
+    ])
+    def test_dict(self, actual, expected):
+        assert self.extension.dict(actual) == expected
+
 
 if __name__ == '__main__':
     unittest.main()

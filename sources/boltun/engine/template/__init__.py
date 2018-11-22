@@ -83,5 +83,9 @@ class Compiler(with_metaclass(ABCMeta, object)):
     def any(self, choice, *other_choices):
         raise NotImplementedError()
 
+    @abstract_method
+    def optional(self, value, alternative=None):
+        raise NotImplementedError()
+
     def nothing(self, environment):
         return None

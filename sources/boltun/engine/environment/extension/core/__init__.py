@@ -5,6 +5,7 @@ import json
 import os
 
 import attr
+import six
 import yaml
 
 from boltun.engine.environment.extension import Extension
@@ -30,12 +31,14 @@ class CoreExtension(Extension):
             FunctionDef('strip', self.strip),
             FunctionDef('lstrip', self.lstrip),
             FunctionDef('rstrip', self.rstrip),
+            FunctionDef('split', self.split),
             FunctionDef('repeat', self.repeat),
             FunctionDef('yaml_load', self.yaml_load),
             FunctionDef('yaml_dump', self.yaml_dump),
             FunctionDef('json_load', self.json_load),
             FunctionDef('json_dump', self.json_dump),
-            FunctionDef('list', self.list),
+            FunctionDef('list', self.list_function),
+            FunctionDef('dict', self.dict),
         ]
 
     def __boltun_filters_definitions__(self):
@@ -46,8 +49,10 @@ class CoreExtension(Extension):
             FilterDef('strip', self.strip),
             FilterDef('lstrip', self.lstrip),
             FilterDef('rstrip', self.rstrip),
+            FilterDef('split', self.split),
             FilterDef('repeat', self.repeat),
-            FilterDef('list', self.list),
+            FilterDef('list', self.list_filter),
+            FilterDef('dict', self.dict),
         ]
 
     def any(self, *args, **kwargs):
@@ -87,7 +92,17 @@ class CoreExtension(Extension):
         return value.rstrip()
 
     @recursive
+    def split(self, value, sep):
+        return value.split(sep)
+
+    @recursive
     def repeat(self, value, count):
+        if isinstance(count, list):
+            return [
+                self.repeat(value, current_count)
+                for current_count in count
+            ]
+
         return "".join([value for _ in range(0, count)])
 
     @recursive
@@ -104,5 +119,11 @@ class CoreExtension(Extension):
     def json_dump(self, value, *args, **kwargs):
         return json.dumps(value, *args, **kwargs)
 
-    def list(self, value, *args, **kwargs):
-        return list(ast.literal_eval(value))
+    def list_function(self, *args):
+        return list(args)
+
+    def list_filter(self, value):
+        return ast.literal_eval(value)
+
+    def dict(self, **kwargs):
+        return {k: v for k, v in six.iteritems(kwargs)}
