@@ -1,12 +1,53 @@
-Boltun (aka rus. Болтун)
+Boltun (aka rus. [Болтун](https://en.wiktionary.org/wiki/%D0%B1%D0%BE%D0%BB%D1%82%D1%83%D0%BD))
 ===
-Generates massive datasets from just a single template
 
+Generates massive datasets from just a single template.
+
+```text
+Command:
+> python -m boltun "{{ Hi || Hello }}, [[ 'welcome' | upper? ]][[? ' back' ]] to Boltun! What[% any('\'s', ' is') %] your name [% any('?', '??') %]"
+
+Hello, welcome to Boltun! What's your name ?
+Hi, WELCOME back to Boltun! What is your name ?
+Hello, WELCOME back to Boltun! What is your name ?
+Hi, welcome back to Boltun! What is your name ?
+Hello, welcome back to Boltun! What is your name ?
+Hi, WELCOME to Boltun! What is your name ?
+Hello, WELCOME to Boltun! What is your name ?
+Hi, welcome to Boltun! What is your name ?
+Hello, welcome to Boltun! What is your name ?
+Hi, WELCOME back to Boltun! What's your name ??
+Hello, WELCOME back to Boltun! What's your name ??
+Hi, welcome back to Boltun! What's your name ??
+Hello, welcome back to Boltun! What's your name ??
+Hi, WELCOME to Boltun! What's your name ??
+Hello, WELCOME to Boltun! What's your name ??
+Hi, welcome to Boltun! What's your name ??
+Hello, welcome to Boltun! What's your name ??
+Hi, WELCOME back to Boltun! What is your name ??
+Hello, WELCOME back to Boltun! What is your name ??
+Hi, welcome back to Boltun! What is your name ??
+Hello, welcome back to Boltun! What is your name ??
+Hi, WELCOME to Boltun! What is your name ??
+Hello, WELCOME to Boltun! What is your name ??
+Hi, welcome to Boltun! What is your name ??
+Hello, welcome to Boltun! What is your name ??
+```
 
 Branch   | CI status
 ---------|-------------------
 master   | [![Build Status](https://travis-ci.org/meiblorn/boltun.svg?branch=master)](https://travis-ci.org/meiblorn/boltun)[![codecov](https://codecov.io/gh/meiblorn/boltun/branch/master/graph/badge.svg)](https://codecov.io/gh/meiblorn/boltun)
 develop  | [![Build Status](https://travis-ci.org/meiblorn/boltun.svg?branch=develop)](https://travis-ci.org/meiblorn/boltun)[![codecov](https://codecov.io/gh/meiblorn/boltun/branch/develop/graph/badge.svg)](https://codecov.io/gh/meiblorn/boltun)
+
+## About
+
+Designed was designed to be best alternative for the NLP machine learning developers.
+It was developed as an alternative for such projects as 
+[Chatito](https://github.com/rodrigopivi/Chatito) and [Tracery](http://tracery.io/). 
+Yes, they almost good, especially Tracery, but both of them are written for Node.JS platform.
+And, as you know, Node.js is a single threaded language — 
+so, as result, that tools are perfect only for small amounts of data. 
+Boltun breaks that bounds of data generation limits.
 
 ## Getting Started
 
@@ -16,9 +57,7 @@ develop  | [![Build Status](https://travis-ci.org/meiblorn/boltun.svg?branch=dev
 
 ### Usage
 
-## Built With
-
-* [Path.py](https://github.com/jaraco/path.py) - Path objects for the Python 2.x
+`pip -m boltun "<your template>"`
 
 ## Contributing
 
