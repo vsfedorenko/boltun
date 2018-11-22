@@ -11,11 +11,26 @@ python:
 - "3.6-dev"  # 3.6 development branch
 - "3.7-dev"  # 3.7 development branch
 
+addons:
+  apt:
+    packages:
+    - oracle-java8-set-default
+
 install:
 - pip install -r requirements/test.txt
 - pip install tox-travis
 - pip install codecov
 - pip install .
+
+before_script:
+- curl -o /tmp/antlr.jar -O https://www.antlr.org/download/antlr-4.7.1-complete.jar
+- java -cp "/tmp/antlr.jar:$CLASSPATH" org.antlr.v4.Tool
+- java -Xmx500M -cp "/tmp/antlr.jar:$CLASSPATH"
+  org.antlr.v4.Tool
+  -package boltun.engine.grammar.antlr4
+  -listener -visitor -Dlanguage=Python2
+  -lib sources/boltun/engine/grammar/antlr4
+  sources/boltun/engine/grammar/antlr4/Antlr4Grammar.g4
 
 script:
 - tox
