@@ -36,7 +36,7 @@ class BaseAntlr4GrammarTestCase(with_metaclass(ABCMeta, unittest.TestCase)):
 
             if isinstance(param_v, list):
 
-                param_expected_values_tuples = zip(param_v, expected_v)
+                param_expected_values_tuples = list(zip(param_v, expected_v))
                 assert len(param_expected_values_tuples) == len(param_v)
                 assert len(param_expected_values_tuples) == len(expected_v)
 

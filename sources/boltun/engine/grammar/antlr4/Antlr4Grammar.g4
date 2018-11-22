@@ -69,7 +69,11 @@ def _get_stop_pos(self, ctx):
 
 import logging
 
-from Queue import Empty, LifoQueue
+try:
+    import queue as queue
+except ImportError:
+    import Queue as queue
+
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
@@ -106,7 +110,7 @@ def _bracket_queue(self):
     try:
         return self.__bracket_queue
     except AttributeError:
-        self.__bracket_queue = LifoQueue()
+        self.__bracket_queue = queue.LifoQueue()
         return self.__bracket_queue
 
 def _open_bracket(self, current):
@@ -124,7 +128,7 @@ def reset(self):
     while not self._bracket_queue.empty():
         try:
             self._bracket_queue.get(False)
-        except Empty:
+        except queue.Empty:
             continue
 
     self._bracket_queue.task_done()

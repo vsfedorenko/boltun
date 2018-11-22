@@ -4,7 +4,6 @@ language: python
 
 python:
 - "2.7"
-- "3.4"
 - "3.5"
 - "3.5-dev"  # 3.5 development branch
 - "3.6"
@@ -16,6 +15,10 @@ addons:
     packages:
     - oracle-java8-set-default
 
+before_install:
+- export PYTHON_MAJOR_VERSION=$(echo ${TRAVIS_PYTHON_VERSION:0:1})
+- echo "Python major version is ${PYTHON_MAJOR_VERSION}"
+
 install:
 - pip install -r requirements/test.txt
 - pip install tox-travis
@@ -24,11 +27,10 @@ install:
 
 before_script:
 - curl -o /tmp/antlr.jar -O https://www.antlr.org/download/antlr-4.7.1-complete.jar
-- java -cp "/tmp/antlr.jar:$CLASSPATH" org.antlr.v4.Tool
 - java -Xmx500M -cp "/tmp/antlr.jar:$CLASSPATH"
   org.antlr.v4.Tool
   -package boltun.engine.grammar.antlr4
-  -listener -visitor -Dlanguage=Python2
+  -listener -visitor -Dlanguage=Python${PYTHON_MAJOR_VERSION}
   -lib sources/boltun/engine/grammar/antlr4
   sources/boltun/engine/grammar/antlr4/Antlr4Grammar.g4
 

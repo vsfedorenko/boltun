@@ -39,7 +39,7 @@ def setup_package():
             'write_to': 'sources/boltun/__version__.py',
         },
 
-        python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+        python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
 
         setup_requires=[
             'pytest-runner', 'setuptools_scm', 'setuptools_scm_git_archive'
