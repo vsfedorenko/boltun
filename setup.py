@@ -2,7 +2,12 @@ import io
 from os.path import abspath, dirname, join
 from shutil import rmtree
 
-import pip
+try:
+    from pip._internal.req import parse_requirements
+    from pip._internal.download import PipSession
+except ImportError:
+    from pip.req import parse_requirements
+    from pip.download import PipSession
 
 try:
     from setuptools import setup, find_packages
@@ -37,11 +42,11 @@ def get_requirements():
 
     requirements_file = join(requirements_dir, 'common.txt')
     try:
-        requirements = pip.req.parse_requirements(requirements_file)
+        requirements = list(parse_requirements(requirements_file))
     except:
         # new versions of pip requires a session
-        requirements = pip.req.parse_requirements(
-            requirements_file, session=pip.download.PipSession())
+        requirements = list(parse_requirements(
+            requirements_file, session=PipSession()))
 
     for item in requirements:
         if getattr(item, 'url', None):  # older pip has url
@@ -80,7 +85,7 @@ def setup_package():
             'write_to': 'sources/boltun/__version__.py',
         },
 
-        python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
+        python_requires='>=3.5.*',
 
         setup_requires=[
             'pytest-runner', 'setuptools_scm', 'setuptools_scm_git_archive'
@@ -95,8 +100,6 @@ def setup_package():
             'Topic :: Text Processing :: General',
             'Topic :: Text Processing :: Markup',
             'Topic :: Text Processing :: Linguistic',
-            'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',

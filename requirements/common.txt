@@ -1,5 +1,4 @@
-antlr4-python2-runtime;  python_version < '3'
-antlr4-python3-runtime;  python_version >= '3'
+antlr4-python3-runtime
 attrs
 PyYAML
 six
