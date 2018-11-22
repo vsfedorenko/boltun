@@ -41,6 +41,8 @@ develop  | [![Build Status](https://travis-ci.org/meiblorn/boltun.svg?branch=dev
 
 ## About
 
+[![boltun_simpsons_bart](https://raw.githubusercontent.com/meiblorn/boltun/master/static/simpsons_bart.png)](https://github.com/meiblorn/boltun)
+
 Designed was designed to be best alternative for the NLP machine learning developers.
 It was developed as an alternative for such projects as 
 [Chatito](https://github.com/rodrigopivi/Chatito) and [Tracery](http://tracery.io/). 
