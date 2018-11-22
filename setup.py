@@ -2,15 +2,21 @@ import io
 from os.path import abspath, dirname, join
 from shutil import rmtree
 
-from setuptools import find_packages, setup
+import pip
+
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from distutils.core import setup, find_packages
 
 root_dir = abspath(dirname(__file__))
 
-dist_dir = join(root_dir, 'dist')
-build_dir = join(root_dir, 'build')
-
+requirements_dir = join(root_dir, 'requirements')
 sources_dir = join(root_dir, 'sources')
 package_dir = join(sources_dir, 'boltun')
+
+dist_dir = join(root_dir, 'dist')
+build_dir = join(root_dir, 'build')
 
 
 def cleanup():
@@ -25,12 +31,47 @@ def get_about():
     return about
 
 
+def get_requirements():
+    links = []  # for repo urls (dependency_links)
+    requires = []  # for package names
+
+    requirements_file = join(requirements_dir, 'common.txt')
+    try:
+        requirements = pip.req.parse_requirements(requirements_file)
+    except:
+        # new versions of pip requires a session
+        requirements = pip.req.parse_requirements(
+            requirements_file, session=pip.download.PipSession())
+
+    for item in requirements:
+        if getattr(item, 'url', None):  # older pip has url
+            links.append(str(item.url))
+        if getattr(item, 'link', None):  # newer pip has link
+            links.append(str(item.link))
+        if item.req:
+            requires.append(str(item.req))  # always the package name
+
+    return requires, links
+
+
 def setup_package():
     cleanup()
 
     about = get_about()
 
+    requires, links = get_requirements()
+
     setup(
+        name=about['__title__'],
+        description=about['__summary__'],
+        author=about['__author__'],
+        author_email=about['__email__'],
+        url=about['__uri__'],
+        license=about['__license__'],
+
+        install_requires=requires,
+        dependency_links=links,
+
         packages=find_packages('sources'),
         package_dir={'': 'sources'},
 
@@ -48,19 +89,21 @@ def setup_package():
         tests_require=['pytest'],
         test_suite='tests',
 
-        name=about['__title__'],
-        description=about['__summary__'],
-        author=about['__author__'],
-        author_email=about['__email__'],
-        url=about['__uri__'],
-        license=about['__license__'],
-
         classifiers=[
+            'Development Status :: 4 - Beta',
+            "License :: OSI Approved :: MIT License",
+            'Topic :: Text Processing :: General',
+            'Topic :: Text Processing :: Markup',
+            'Topic :: Text Processing :: Linguistic',
             'Programming Language :: Python :: 2',
             'Programming Language :: Python :: 2.7',
-            "License :: OSI Approved :: MIT License",
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7',
             "Intended Audience :: Developers",
             "Operating System :: OS Independent",
+            'Topic :: Software Development :: Libraries :: Python Modules',
+            'Topic :: Text Processing :: Markup',
         ]
     )
 
