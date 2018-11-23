@@ -54,7 +54,9 @@ deploy:
 - provider: script
   script: bash ./scripts/docker.sh push
   on:
+    python: 3.5
     branch: master
+    tags: true
 
 after_deploy:
 - echo 'Successfully deployed to PYPI'
