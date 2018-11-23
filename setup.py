@@ -79,6 +79,8 @@ def setup_package():
         packages=find_packages('sources'),
         package_dir={'': 'sources'},
 
+        scripts=['bin/boltun'],
+
         use_scm_version={
             'version_scheme': 'guess-next-dev',
             'write_to': 'sources/boltun/__version__.py',
