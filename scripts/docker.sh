@@ -12,8 +12,12 @@ login() {
 build() {
     [ ! -z $1 ] && VERSION_TAG=$1 || VERSION_TAG='latest'
 
-    echo "Current working directory $(pwd)"
+    echo "Current working directory $(pwd) ->"
     tree -L 1
+
+    echo "Dist directory ->"
+    tree dist
+
     docker build -t "${IMAGE_NAME}:${VERSION_TAG}" .
 }
 
@@ -23,11 +27,11 @@ run() {
 
 push() {
     login
-    build
 
     VERSION_TAGS="${@}"
     for VERSION_TAG in ${VERSION_TAGS}
     do
+        build ${VERSION_TAG}
         docker push "${IMAGE_NAME}:${VERSION_TAG}"
     done
 }

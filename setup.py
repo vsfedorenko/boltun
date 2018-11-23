@@ -1,5 +1,6 @@
 import io
 from os.path import abspath, dirname, join
+from shutil import rmtree
 
 try:
     from pip._internal.req import parse_requirements
@@ -15,9 +16,17 @@ except ImportError:
 
 root_dir = abspath(dirname(__file__))
 
+dist_dir = join(root_dir, 'dist')
+build_dir = join(root_dir, 'build')
+
 requirements_dir = join(root_dir, 'requirements')
 sources_dir = join(root_dir, 'sources')
 package_dir = join(sources_dir, 'boltun')
+
+
+def cleanup():
+    rmtree(build_dir, ignore_errors=True)
+    rmtree(dist_dir, ignore_errors=True)
 
 
 def get_about():
@@ -51,6 +60,8 @@ def get_requirements():
 
 
 def setup_package():
+    cleanup()
+
     about = get_about()
     requires, links = get_requirements()
 

@@ -2,3 +2,5 @@
 
 *
 !dist
+!dist/*.whl
+!dist/*.tar.gz
