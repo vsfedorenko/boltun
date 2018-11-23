@@ -48,7 +48,7 @@ deploy:
   script: bash ./scripts/pip.sh upload
   skip_cleanup: true
   on:
-    python: 3.5
+    python: 3.6
     branch: master
     tags: true
 
@@ -56,7 +56,7 @@ deploy:
   script: bash ./scripts/docker.sh push ${BOLTUN_PACKAGE_VERSION} latest
   skip_cleanup: true
   on:
-    python: 3.5
+    python: 3.6
     branch: master
     tags: true
 
