@@ -13,6 +13,10 @@ build() {
     docker build -t ${IMAGE_NAME} .
 }
 
+run() {
+    docker run meiblorn/boltun "$@"
+}
+
 push() {
     login
     build

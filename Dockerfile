@@ -1,7 +1,9 @@
 FROM python:alpine
 
-COPY dist/boltun-*.tar.gz /opt/boltun/dist/boltun.tar.gz
+ARG BOLTUN_DIR="/opt/boltun"
 
-RUN pip install /opt/boltun/dist/boltun.tar.gz
+ARG WHL_DIR=${BOLTUN_DIR}/dist
+COPY dist/boltun-*.whl ${WHL_DIR}/
+RUN pip install ${WHL_DIR}/*.whl
 
 ENTRYPOINT ["python", "-m", "boltun"]
