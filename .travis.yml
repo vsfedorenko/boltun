@@ -43,6 +43,7 @@ before_deploy:
 
 deploy:
 - provider: pypi
+  skip_cleanup: true
   user: meiblorn
   distributions: "sdist bdist_wheel"
   password:
@@ -52,6 +53,7 @@ deploy:
     branch: master
     tags: true
 - provider: script
+  skip_cleanup: true
   script: bash ./scripts/docker.sh push
   on:
     python: 3.5
