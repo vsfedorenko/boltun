@@ -15,6 +15,7 @@ services:
 addons:
   apt:
     packages:
+    - tree
     - oracle-java8-set-default
     - docker-ce
 
@@ -39,13 +40,15 @@ after_success:
 - codecov
 
 before_deploy:
-- echo 'Deploying to PYPI'
+- export BOLTUN_PACKAGE_VERSION=$(python setup.py --version)
+- echo 'Deploying to PYPI and Docker Hub'
 
 deploy:
 - provider: pypi
   skip_cleanup: true
   user: meiblorn
   distributions: "sdist bdist_wheel"
+  skip_existing: true
   password:
     secure: JV/KtPFq86QjWTe40BeOGErwj3/8XS1mAsCs+cHlbzBlSdmxHiOLa8f7W8if9SgoLMI4Lp88jb06wQgKiTXFHoTc2EWnTpO3q9ANckFBT+pFbuJJmltIFEcCSTxifLbmdarepdxj6u1ddt/E5dEe855CjA09N6tQ12ImfiHjlNJVas0ZTvEJ7q1r1SWJIAgeL4PnNRurozolL4V/CZBElDU3grqvJpg8R8qh8r9+RBE7NGuK6a3RQd4uB9RIWfchbdPE4l6qtGlv2e1uizsKOIJB++d9aB7fdaVOD2jIrENwbfzYT0YhCQgXzMNQJ+8FwDmLI0higdm+rSHf6d4sOWzERtsvpPGu50yqFbYMrpDnMYhOwDFCFRwsgIfEiumcrW915PMuGK4BNW2zUouDt3dbvobNyef42wycWvm1Jap+cDVhm//q+1UNo8Bq5B4Nn6NcOZD9zQVIwWhQXbcPOMTx5hNrvPa3R7P8rUmOE2oUKjs3jheoufLO0o9oMprPv8GkA0jEYJu7SVYxEcjdfF80PywhrXntrHcsoVLxM8REcSjlhb48zsSay6XcZ6LP905DkePTUaG4wjumqCUk/roeDeHYbQMCz1ju5x2slYiI8wg/fGSYYxJt6JBvvhIvFvh8IqKuHUlQvL8lpAE+SJ8n8ogabS29IwWhxat0ibk=
   on:
@@ -54,11 +57,11 @@ deploy:
     tags: true
 - provider: script
   skip_cleanup: true
-  script: bash ./scripts/docker.sh push
+  script: bash ./scripts/docker.sh push ${BOLTUN_PACKAGE_VERSION} latest
   on:
     python: 3.5
     branch: master
     tags: true
 
 after_deploy:
-- echo 'Successfully deployed to PYPI'
+- echo 'Successfull deployment'

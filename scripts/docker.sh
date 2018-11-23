@@ -10,7 +10,11 @@ login() {
 }
 
 build() {
-    docker build -t ${IMAGE_NAME} .
+    [ ! -z $1 ] && VERSION_TAG=$1 || VERSION_TAG='latest'
+
+    echo "Current working directory $(pwd)"
+    tree -L 1
+    docker build -t "${IMAGE_NAME}:${VERSION_TAG}" .
 }
 
 run() {
@@ -21,7 +25,11 @@ push() {
     login
     build
 
-    docker push ${IMAGE_NAME}
+    VERSION_TAGS="${@}"
+    for VERSION_TAG in ${VERSION_TAGS}
+    do
+        docker push "${IMAGE_NAME}:${VERSION_TAG}"
+    done
 }
 
 
