@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 
 language: python
 
@@ -9,10 +9,14 @@ python:
 - "3.6-dev"  # 3.6 development branch
 - "3.7-dev"  # 3.7 development branch
 
+services:
+- docker
+
 addons:
   apt:
     packages:
     - oracle-java8-set-default
+    - docker-ce
 
 before_install:
 - export PYTHON_MAJOR_VERSION=$(echo ${TRAVIS_PYTHON_VERSION:0:1})
@@ -47,6 +51,10 @@ deploy:
     python: 3.5
     branch: master
     tags: true
+- provider: script
+  script: bash ./scripts/docker.sh push
+  on:
+    branch: master
 
 after_deploy:
 - echo 'Successfully deployed to PYPI'
