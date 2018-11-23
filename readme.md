@@ -5,33 +5,24 @@ Generates massive datasets from just a single template.
 
 ```text
 Command:
-> python -m boltun "{{ Hi || Hello }}, [[ 'welcome' | upper? ]][[? ' back' ]] to Boltun! What[% any('\'s', ' is') %] your name [% any('?', '??') %]"
+> python -m boltun "{{ Hi || Hello }}, [[ 'welcome' | upper? ]][[? ' back' ]] to Boltun [% repeat('!', [1, 3]) %]"
 
-Hello, welcome to Boltun! What's your name ?
-Hi, WELCOME back to Boltun! What is your name ?
-Hello, WELCOME back to Boltun! What is your name ?
-Hi, welcome back to Boltun! What is your name ?
-Hello, welcome back to Boltun! What is your name ?
-Hi, WELCOME to Boltun! What is your name ?
-Hello, WELCOME to Boltun! What is your name ?
-Hi, welcome to Boltun! What is your name ?
-Hello, welcome to Boltun! What is your name ?
-Hi, WELCOME back to Boltun! What's your name ??
-Hello, WELCOME back to Boltun! What's your name ??
-Hi, welcome back to Boltun! What's your name ??
-Hello, welcome back to Boltun! What's your name ??
-Hi, WELCOME to Boltun! What's your name ??
-Hello, WELCOME to Boltun! What's your name ??
-Hi, welcome to Boltun! What's your name ??
-Hello, welcome to Boltun! What's your name ??
-Hi, WELCOME back to Boltun! What is your name ??
-Hello, WELCOME back to Boltun! What is your name ??
-Hi, welcome back to Boltun! What is your name ??
-Hello, welcome back to Boltun! What is your name ??
-Hi, WELCOME to Boltun! What is your name ??
-Hello, WELCOME to Boltun! What is your name ??
-Hi, welcome to Boltun! What is your name ??
-Hello, welcome to Boltun! What is your name ??
+Hi, WELCOME back to Boltun !
+Hello, WELCOME back to Boltun !
+Hi, welcome back to Boltun !
+Hello, welcome back to Boltun !
+Hi, WELCOME to Boltun !
+Hello, WELCOME to Boltun !
+Hi, welcome to Boltun !
+Hello, welcome to Boltun !
+Hi, WELCOME back to Boltun !!!
+Hello, WELCOME back to Boltun !!!
+Hi, welcome back to Boltun !!!
+Hello, welcome back to Boltun !!!
+Hi, WELCOME to Boltun !!!
+Hello, WELCOME to Boltun !!!
+Hi, welcome to Boltun !!!
+Hello, welcome to Boltun !!!
 ```
 
 Branch   | CI status
@@ -43,23 +34,44 @@ develop  | [![Build Status](https://travis-ci.org/meiblorn/boltun.svg?branch=dev
 
 [![boltun_simpsons_bart](https://raw.githubusercontent.com/meiblorn/boltun/master/static/simpsons_bart.png)](https://github.com/meiblorn/boltun)
 
-Designed was designed to be best alternative for the NLP machine learning developers.
+**Boltun** is designed to be best alternative for the natural language machine-learning developers and enthusiasts.
+
 It was developed as an alternative for such projects as 
 [Chatito](https://github.com/rodrigopivi/Chatito) and [Tracery](http://tracery.io/). 
-Yes, they almost good, especially Tracery, but both of them are written for Node.JS platform.
-And, as you know, Node.js is a single threaded language — 
-so, as result, that tools are perfect only for small amounts of data. 
+Yes, they are almost perfect, especially Tracery, but both of them are written for NodeJS platform. 
+NodeJS is a single threaded language, so that tools are perfect only for small amounts of data. 
 Boltun breaks that bounds of data generation limits.
 
 ## Getting Started
 
 ### Installing
 
-`pip install boltun`
+Using pip ([PyPI repository](https://pypi.org/project/boltun/)):
+
+```bash
+pip install boltun
+```
+
+Boltun is also available on 
+[Docker Hub](https://hub.docker.com/r/meiblorn/boltun):
+
+```bash
+docker pull meiblorn/boltun
+```
+
+For macOS users, Boltun is available via 
+[Homebrew](https://brew.sh)
+
+```bash
+brew install boltun
+```
 
 ### Usage
 
-`pip -m boltun "<your template>"`
+```bash
+pip -m boltun "<your template>"
+```
+
 
 ## Contributing
 
@@ -69,7 +81,7 @@ Please read [contributing.md](contributing.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/meiblorn/boltun/tags). 
+We use [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/meiblorn/boltun/tags). 
 
 ## Authors
 
